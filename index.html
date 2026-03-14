@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0f0f0f" />
+    <title>Creator Map</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" crossorigin="" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" crossorigin="" />
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <nav id="sidebar-nav">
+        <button id="nav-menu-btn" type="button" class="nav-item" title="메뉴">
+          <span class="nav-icon-wrap">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+          </span>
+        </button>
+        <button id="nav-home" type="button" class="nav-item active" title="홈">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+          <span class="nav-label">홈</span>
+        </button>
+        <button id="nav-shorts" type="button" class="nav-item" title="Shorts">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="4" width="14" height="16" rx="2"/>
+            <polygon points="18 8 22 12 18 16 18 8"/>
+          </svg>
+          <span class="nav-label">Shorts</span>
+        </button>
+        <button id="nav-subscriptions" type="button" class="nav-item" title="구독">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="2" width="20" height="20" rx="2"/>
+            <polygon points="10 8 16 12 10 16 10 8"/>
+          </svg>
+          <span class="nav-label">구독</span>
+        </button>
+        <button id="nav-mypage" type="button" class="nav-item" title="내 페이지">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <circle cx="12" cy="9" r="3"/>
+            <path d="M6 20c1.5-2 3.5-3 6-3s4.5 1 6 3"/>
+          </svg>
+          <span class="nav-label">내 페이지</span>
+        </button>
+      </nav>
+      <div id="main-content">
+      <div id="subscriptions-page" class="page-hidden">
+        <div class="subs-header">
+          <h1 class="subs-title">구독</h1>
+          <div class="subs-search-wrap yt-search-wrap">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="subs-search-input" placeholder="채널·쇼츠 검색..." autocomplete="off" />
+          </div>
+          <div class="subs-chips">
+            <button type="button" class="subs-chip active">전체</button>
+            <button type="button" class="subs-chip">오늘</button>
+            <button type="button" class="subs-chip">이번 주</button>
+            <button type="button" class="subs-chip">이번 달</button>
+          </div>
+        </div>
+        <div class="subs-slider-wrap">
+          <button type="button" class="subs-slider-btn subs-slider-prev" aria-label="이전">‹</button>
+          <div class="subs-channels" id="subs-channels"></div>
+          <button type="button" class="subs-slider-btn subs-slider-next" aria-label="다음">›</button>
+        </div>
+        <div id="update-channel-overlay" class="modal-overlay hidden">
+          <div class="modal-content modal-content-compact">
+            <div class="shorts-collecting-wrap">
+              <span class="shorts-collecting-text">업데이트 중</span>
+              <div class="shorts-collecting-progress-wrap">
+                <div class="shorts-collecting-progress-bar" id="update-progress-bar" style="width: 0%"></div>
+              </div>
+              <span class="shorts-collecting-percent" id="update-progress-percent">0%</span>
+            </div>
+          </div>
+        </div>
+        <div id="add-channel-modal" class="modal-overlay hidden">
+          <div class="modal-content">
+            <h3 class="modal-title">채널 추가</h3>
+            <p class="modal-desc">채널명을 검색하거나, YouTube URL을 붙여넣으면 설명·댓글에 주소가 있는 쇼츠만 가져옵니다.</p>
+            <div class="add-url-row">
+              <input type="text" id="add-url-input" class="modal-input" placeholder="YouTube URL 붙여넣기 (채널 또는 쇼츠)" autocomplete="off" />
+              <button type="button" id="add-url-btn" class="modal-btn modal-btn-confirm">추가</button>
+            </div>
+            <input type="text" id="add-channel-input" class="modal-input" placeholder="채널명 검색..." autocomplete="off" />
+            <div id="add-channel-results" class="channel-search-results"></div>
+            <div class="modal-actions">
+              <button type="button" class="modal-btn modal-btn-cancel">취소</button>
+            </div>
+          </div>
+        </div>
+        <div class="subs-shorts-section">
+          <div class="subs-shorts-grid" id="subs-shorts-grid"></div>
+        </div>
+      </div>
+      <div id="home-page">
+      <div id="map-container">
+        <button id="home-btn" type="button" title="홈">
+          <span class="home-icon">🏠</span>
+          <span class="home-text">Creator Map</span>
+        </button>
+        <div id="map-overlay">
+          <div id="info-panel">
+            <div id="map-search-bar-mobile" class="map-search-bar-mobile">
+              <div id="map-search-wrap" class="yt-search-wrap">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="map-search-input" placeholder="Creator Map 검색" autocomplete="off" />
+              </div>
+              <button id="gps-btn" type="button" class="gps-btn-circle" title="내 위치" aria-label="내 위치">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+              </button>
+            </div>
+            <div id="map-category-chips" class="map-category-chips">
+              <button type="button" class="map-chip">쇼츠</button>
+              <button type="button" class="map-chip">장소</button>
+              <button type="button" class="map-chip">내 위치</button>
+            </div>
+            <div id="info-panel-desktop">
+              <h2>지도</h2>
+              <p>마커를 클릭하거나 지도를 드래그해서 탐색하세요.</p>
+              <div id="map-actions">
+                <button type="button" class="gps-btn-desktop" id="gps-btn-desktop">📍 내 위치</button>
+                <div id="map-search-wrap-desktop" class="yt-search-wrap">
+                  <span class="search-icon">🔍</span>
+                  <input type="text" id="map-search-input-desktop" placeholder="장소 검색..." autocomplete="off" />
+                </div>
+              </div>
+              <p id="gps-status"></p>
+              <a href="/admin.html" class="admin-link" title="위치 추천 확인">📍 위치 관리</a>
+            </div>
+          </div>
+        </div>
+        <div id="map"></div>
+        <div id="map-location-info" class="map-location-info">
+          <p class="map-location-placeholder">쇼츠를 클릭하거나 장소를 검색하면 해당 위치 정보가 표시됩니다.</p>
+        </div>
+      </div>
+      <div id="resize-handle" title="드래그하여 크기 조절" role="separator" aria-label="드래그하여 쇼츠 크기 조절">
+        <span class="resize-handle-icon">⋮⋮</span>
+      </div>
+      <div id="shorts-section">
+        <div id="shorts-search-wrap" class="yt-search-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="shorts-search-input" placeholder="쇼츠 검색..." autocomplete="off" />
+        </div>
+        <div id="shorts-container">
+          <div id="shorts-list-header" class="shorts-list-header" style="display: none;">
+            <span class="shorts-list-header-text"></span>
+            <button type="button" class="place-filter-clear">전체 보기</button>
+          </div>
+          <div class="shorts-list" id="shorts-list"></div>
+        </div>
+      </div>
+      <div id="shorts-player" class="hidden">
+        <button id="close-player" type="button">✕</button>
+        <div id="player-video-wrap">
+          <iframe id="player-iframe" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+        <div id="player-info">
+          <div class="player-title-row">
+            <span id="player-title"></span>
+            <button id="player-show-map-btn" type="button" class="player-map-btn" title="지도에서 위치 보기">🗺️ 지도에서 위치 보기</button>
+          </div>
+          <span id="player-views"></span>
+          <a id="player-yt-link" href="#" target="_blank" rel="noopener">YouTube에서 보기</a>
+        </div>
+      </div>
+      </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

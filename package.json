@@ -1,0 +1,39 @@
+{
+  "name": "map-1",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "engines": { "node": ">=16.0.0" },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "add-shorts": "node scripts/add-shorts-from-url.js",
+    "search-concert-shorts": "node scripts/search-and-add-concert-shorts.js",
+    "fetch-nyeat": "node scripts/fetch-all-nyeat-shorts.js",
+    "fetch-space-tamnik": "node scripts/fetch-space-tamnik.js",
+    "fetch-yammkki": "node scripts/fetch-yammkki.js",
+    "fix-korean-addresses": "node scripts/fix-korean-addresses.js",
+    "add-locations": "node scripts/add-short-locations.js",
+    "update-locations": "node scripts/update-short-locations.js",
+    "update-detailed-locations": "node scripts/update-detailed-locations.js",
+    "populate-location-text": "node scripts/populate-location-text.js",
+    "populate-address-from-coords": "node scripts/populate-address-from-coords.js",
+    "reset-locations": "node scripts/reset-locations.js",
+    "suggest-locations": "node scripts/suggest-locations.js",
+    "apply-suggestions": "node scripts/apply-suggestions.js",
+    "fetch-youtube": "python scripts/fetch_shorts_youtube_api.py",
+    "tunnel": "node scripts/tunnel.js",
+    "tunnel:lt": "npx localtunnel --port 5173",
+    "mobile": "npm run build && npm run preview",
+    "open-port": "powershell -ExecutionPolicy Bypass -File scripts/open-port.ps1"
+  },
+  "dependencies": {
+    "leaflet": "^1.9.4",
+    "leaflet.markercluster": "^1.5.3"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0",
+    "youtubei.js": "^16.0.1"
+  }
+}

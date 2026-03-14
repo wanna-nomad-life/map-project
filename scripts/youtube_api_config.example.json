@@ -1,0 +1,13 @@
+{
+  "api_key": "YOUR_YOUTUBE_API_KEY",
+  "channels": [
+    {
+      "youtubeChannelId": "UCmxdQo57ptM088VXM200fGw",
+      "name": "뉴욕세끼 NYeat",
+      "id": 1,
+      "color": "#e53935"
+    }
+  ],
+  "max_results_per_channel": 15,
+  "shorts_max_duration_seconds": 60
+}

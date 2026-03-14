@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>위치 추천 확인 - Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0f0f0f;
+      --bg2: #212121;
+      --text: #f1f1f1;
+      --text2: #aaaaaa;
+      --border: #303030;
+      --green: #3ea6ff;
+      --red: #ff4e45;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 24px;
+      line-height: 1.5;
+    }
+    h1 { margin-bottom: 8px; font-size: 1.5rem; }
+    .sub { color: var(--text2); font-size: 0.9rem; margin-bottom: 20px; }
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .toolbar button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      background: var(--bg2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .toolbar button:hover { background: #272727; }
+    .toolbar button.primary { background: var(--green); color: #000; border-color: var(--green); }
+    .toolbar button.primary:hover { filter: brightness(1.1); }
+    .card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .card.approved { border-left: 4px solid var(--green); }
+    .card.skipped { opacity: 0.6; }
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .card-title { font-weight: 500; flex: 1; }
+    .card-actions { display: flex; gap: 8px; flex-shrink: 0; }
+    .card-actions button {
+      padding: 6px 12px;
+      font-size: 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .card-actions button:hover { background: #272727; }
+    .card-actions button.approve { background: var(--green); color: #000; }
+    .card-desc { font-size: 0.85rem; color: var(--text2); margin-bottom: 12px; max-height: 60px; overflow: hidden; }
+    .suggestion {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 12px;
+      align-items: center;
+      font-size: 0.9rem;
+    }
+    .suggestion input {
+      padding: 8px 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 13px;
+    }
+    .suggestion input:focus { outline: none; border-color: var(--green); }
+    .suggestion .coord { font-size: 0.8rem; color: var(--text2); }
+    .badge { font-size: 0.75rem; padding: 2px 6px; border-radius: 4px; }
+    .badge.medium { background: #1a5fb4; }
+    .badge.low { background: #555; }
+    .stats { margin-bottom: 16px; color: var(--text2); font-size: 0.9rem; }
+    #empty-msg { color: var(--text2); padding: 40px; text-align: center; }
+  </style>
+</head>
+<body>
+  <h1>📍 위치 추천 확인</h1>
+  <p class="sub">제목+설명 기반 추천을 검토하고, 확인한 항목만 적용하세요.</p>
+
+  <div class="toolbar">
+    <button type="button" id="btn-approve-all">전체 확인</button>
+    <button type="button" id="btn-skip-all">전체 건너뛰기</button>
+    <button type="button" id="btn-download" class="primary">적용 데이터 다운로드</button>
+  </div>
+
+  <div class="stats" id="stats"></div>
+  <div id="list"></div>
+  <div id="empty-msg" style="display:none;">location-suggestions.json이 없습니다. 먼저 <code>npm run suggest-locations</code>를 실행하세요.</div>
+
+  <script type="module">
+    let suggestions = [];
+
+    async function load() {
+      try {
+        const res = await fetch('/data/location-suggestions.json');
+        if (!res.ok) throw new Error('파일 없음');
+        const data = await res.json();
+        suggestions = data.suggestions || [];
+      } catch (e) {
+        document.getElementById('empty-msg').style.display = 'block';
+        document.getElementById('list').innerHTML = '';
+        return;
+      }
+      render();
+    }
+
+    function render() {
+      const listEl = document.getElementById('list');
+      const statsEl = document.getElementById('stats');
+      const approved = suggestions.filter(s => s.approved);
+      const skipped = suggestions.filter(s => s.skipped);
+
+      statsEl.textContent = `총 ${suggestions.length}개 | 확인 ${approved.length}개 | 건너뜀 ${skipped.length}개`;
+
+      listEl.innerHTML = suggestions.map((s, i) => {
+        const sc = s.approved ? 'approved' : s.skipped ? 'skipped' : '';
+        const loc = s.approved && s.approvedData ? s.approvedData : s.suggested;
+        return `
+          <div class="card ${sc}" data-idx="${i}">
+            <div class="card-header">
+              <span class="card-title">${escapeHtml(s.title || '(제목 없음)')}</span>
+              <div class="card-actions">
+                ${!s.skipped && !s.approved ? `<button class="approve" data-action="approve">확인</button>` : ''}
+                ${!s.skipped && !s.approved ? `<button data-action="skip">건너뛰기</button>` : ''}
+                ${s.approved ? `<button data-action="undo">취소</button>` : ''}
+                ${s.skipped ? `<button data-action="undo">취소</button>` : ''}
+              </div>
+            </div>
+            ${s.descriptionSnippet ? `<div class="card-desc">${escapeHtml(s.descriptionSnippet)}</div>` : ''}
+            <div class="suggestion">
+              <div>
+                <input type="text" data-field="placeName" value="${escapeHtml(loc?.placeName || '')}" placeholder="장소명" />
+                <input type="text" data-field="address" value="${escapeHtml(loc?.address || '')}" placeholder="주소" style="margin-top:6px;width:100%;" />
+              </div>
+              <div>
+                <input type="text" data-field="lat" value="${loc?.lat ?? ''}" placeholder="위도" style="width:100px" />
+                <input type="text" data-field="lng" value="${loc?.lng ?? ''}" placeholder="경도" style="width:100px;margin-left:4px" />
+                <span class="coord">${loc?.place || ''}</span>
+              </div>
+              <span class="badge ${(loc?.confidence || 'low')}">${loc?.confidence || 'low'}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      listEl.querySelectorAll('[data-action]').forEach(btn => {
+        btn.onclick = (e) => {
+          const idx = +e.target.closest('.card').dataset.idx;
+          const action = e.target.dataset.action;
+          if (action === 'approve') {
+            suggestions[idx].approved = true;
+            suggestions[idx].approvedData = getEditedData(idx);
+          } else if (action === 'skip') {
+            suggestions[idx].skipped = true;
+          } else if (action === 'undo') {
+            suggestions[idx].approved = false;
+            suggestions[idx].skipped = false;
+          }
+          render();
+        };
+      });
+
+      listEl.querySelectorAll('input').forEach(inp => {
+        inp.onchange = () => {
+          const idx = +inp.closest('.card').dataset.idx;
+          if (suggestions[idx].approved) {
+            suggestions[idx].approvedData = getEditedData(idx);
+          }
+        };
+      });
+    }
+
+    function getEditedData(idx) {
+      const card = document.querySelector(`.card[data-idx="${idx}"]`);
+      if (!card) return suggestions[idx].suggested;
+      const loc = suggestions[idx].suggested || {};
+      return {
+        lat: parseFloat(card.querySelector('[data-field="lat"]').value) || loc.lat,
+        lng: parseFloat(card.querySelector('[data-field="lng"]').value) || loc.lng,
+        place: loc.place,
+        placeName: card.querySelector('[data-field="placeName"]').value || loc.placeName,
+        address: card.querySelector('[data-field="address"]').value || loc.address,
+      };
+    }
+
+    function escapeHtml(s) {
+      if (!s) return '';
+      const div = document.createElement('div');
+      div.textContent = s;
+      return div.innerHTML;
+    }
+
+    document.getElementById('btn-approve-all').onclick = () => {
+      suggestions.forEach((s, i) => {
+        if (!s.skipped) {
+          s.approved = true;
+          s.approvedData = { ...s.suggested };
+        }
+      });
+      render();
+    };
+
+    document.getElementById('btn-skip-all').onclick = () => {
+      suggestions.forEach(s => { s.skipped = true; s.approved = false; });
+      render();
+    };
+
+    document.getElementById('btn-download').onclick = () => {
+      const approved = suggestions.filter(s => s.approved && s.approvedData).map(s => ({
+        id: s.id,
+        youtubeVideoId: s.youtubeVideoId,
+        ...s.approvedData,
+      }));
+      if (approved.length === 0) {
+        alert('확인한 항목이 없습니다. 먼저 "확인"을 눌러 적용할 항목을 선택하세요.');
+        return;
+      }
+      const blob = new Blob([JSON.stringify(approved, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'location-approved.json';
+      a.click();
+      URL.revokeObjectURL(a.href);
+      alert(`${approved.length}개 항목이 location-approved.json으로 다운로드되었습니다.\n\n다음 명령으로 적용하세요:\nnpm run apply-suggestions -- ./location-approved.json`);
+    };
+
+    load();
+  </script>
+</body>
+</html>

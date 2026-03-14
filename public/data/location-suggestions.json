@@ -1,0 +1,710 @@
+{
+  "updatedAt": "2026-02-21T16:20:28.366Z",
+  "suggestions": [
+    {
+      "id": 4,
+      "youtubeVideoId": "QEdGCujiJNw",
+      "title": "I met Chairman Jensen Huang in Las Vegas",
+      "descriptionSnippet": "Today's video is a bit like a vlog from CES in Las Vegas. The highlight is, of course, NVIDIA CEO/Chairman Jensen Huang, and he's incredibly cool. Since there's no food in this video, I'm personally curious to see how many views it will get.\n\nInstagram: @NYeat.ins\nTikTok: @NYeat.tiktok\n\n#NewYork #Ne",
+      "suggested": {
+        "lat": 36.1674263,
+        "lng": -115.1484131,
+        "place": "Las Vegas",
+        "placeName": "Las Vegas",
+        "address": "Las Vegas, Clark County, Nevada, United States",
+        "confidence": "high"
+      },
+      "applied": false
+    },
+    {
+      "id": 5,
+      "youtubeVideoId": "TwgOFKbPyLg",
+      "title": "Gordon Ramsay Burger Set (85",
+      "descriptionSnippet": "Today, I visited the Las Vegas branch of Gordon Ramsay Burger, which is far from being a good value. Following Hell's Kitchen and the Gordon Ramsay Steakhouse, this is the burger. While it's delicious, it's also incredibly expensive.\n\nInstagram: @NYeat.ins\nTikTok: @NYeat.tiktok\n\n#NewYork #NewYorkRes",
+      "suggested": {
+        "lat": 36.0931,
+        "lng": -115.175,
+        "place": "라스베가스",
+        "placeName": "Gordon Ramsay Burger",
+        "address": "3667 S Las Vegas Blvd, Planet Hollywood, Las Vegas, NV 89109, USA",
+        "confidence": "medium"
+      },
+      "applied": false
+    },
+    {
+      "id": 6,
+      "youtubeVideoId": "XVMKNt6U9fc",
+      "title": "A single serving of American-style steak packs 2",
+      "descriptionSnippet": "Today, I visited the famous Peter Luger Steakhouse in Las Vegas. They offer a lunch set for one person, and I loved that it included dry-aged meat.\n\nInstagram: @NYeat.ins\nTikTok: @NYeat.tiktok\n\n#NewYork #NewYorkRestaurants #NewYorkVlog #NewYorkMeals",
+      "suggested": {
+        "lat": 36.0925,
+        "lng": -115.1766,
+        "place": "라스베가스",
+        "placeName": "Mandalay Bay",
+        "address": "3950 S Las Vegas Blvd, Las Vegas, NV 89119, USA",
+        "confidence": "medium"
+      },
+      "applied": false
+    },
+    {
+      "id": 7,
+      "youtubeVideoId": "jspWmkHHWr8",
+      "title": "‘America’s Pizza Capital’ as designated by the US Congress lol",
+      "descriptionSnippet": "Today, I had pizza (apizza) in New Haven, Connecticut. It's officially recognized by the U.S. Congress as the Pizza Capital of the United States. I was surprised, but it's true.\n\nInstagram: @NYeat.ins\nTikTok: @NYeat.tiktok\n\n#NewYork #NewYorkRestaurants #NewYorkVlog #NewYorkMeals",
+      "suggested": {
+        "lat": 41.30296,
+        "lng": -72.91693,
+        "place": "뉴헤이븐",
+        "placeName": "Frank Pepe's Pizza",
+        "address": "157 Wooster St, New Haven, CT 06511, USA",
+        "confidence": "medium"
+      },
+      "applied": false
+    },
+    {
+      "id": 8,
+      "youtubeVideoId": "Qk8LvMoLfMU",
+      "title": "I couldn't afford to go to a hospital in New York",
+      "descriptionSnippet": "Today, I went to the dentist in New York and was recommended some ridiculous 30 million won treatment, so I immediately went to a friend's dentist and got it done. These American doctors who try to force root canals and crowns on perfectly healthy teeth are truly vile.\n\nInstagram: @NYeat.ins\nTikTok:",
+      "suggested": {
+        "lat": 40.7484,
+        "lng": -73.9857,
+        "place": "뉴욕 맨해튼",
+        "placeName": "Sushi Sho",
+        "address": "New York, NY, USA",
+        "confidence": "medium"
+      },
+      "applied": false
+    },
+    {
+      "id": 9,
+      "youtubeVideoId": "ftyI3p6yeQs",
+      "title": "What Happens When You Order a $40 Soup at a New York Ski Resort",
+      "descriptionSnippet": "Today, I ordered 40,000 won worth of soup and fries at Hunter Mountain Ski Resort in New York. Things like this are expensive in the US, but it was so cold outside that I enjoyed it.\n\nInstagram: @NYeat.ins\nTikTok: @NYeat.tiktok\n\n#NewYork #NewYorkRestaurants #NewYorkVlog #NewYorkMeals",
+      "suggested": {
+        "lat": 42.2049,
+        "lng": -74.2332,
+        "place": "뉴욕 업스테이트",
+        "placeName": "Hunter Mountain",
+        "address": "Hunter, NY 12442, USA",
+        "confidence": "medium"
+      },
+      "applied": false
+    },
+    {
+      "id": 10,
+      "youtubeVideoId": "emkU8DPJygI",
+      "title": "The world's cheapest Michelin 3-star restaurant",
+      "descriptionSnippet": "Today, I visited Sushi Sho in New York City, the world's most affordable Michelin 3-star restaurant. Of the 15 3-star restaurants worldwide, it's the only one in the US and the only one outside of Japan. The menu is omakase sushi, and they offer afternoon chirashi and chirashi takeout only on Friday",
+      "suggested": {
+        "lat": 40.7484,
+        "lng": -73.9857,
+        "place": "뉴욕 맨해튼",
+        "placeName": "Sushi Sho",
+        "address": "New York, NY, USA",
+        "confidence": "medium"
+      },
+      "applied": false
+    },
+    {
+      "id": 11,
+      "youtubeVideoId": "7UDUtsP5w8s",
+      "title": "\"Surviving China is proof of strength.\"",
+      "descriptionSnippet": "Today, I tried Molly Tea, one of China's leading milk tea brands. This is my third introduction, following Hey Tea (Hee Tea) and Chaji (Pae Wang Cha Hee). I tried it in New York's Chinatown. It's famous for its jasmine tea.\n\nInstagram: @NYeat.ins\nTikTok: @NYeat.tiktok\n\n#NewYork #NewYorkRestaurants #",
+      "suggested": {
+        "lat": 41.8662377,
+        "lng": 12.5965612,
+        "place": "New York",
+        "placeName": "it, New York",
+        "address": "New York, 1/a, Via dell'Aquila Reale, Municipio Roma VI, Roma, Roma Capitale, Lazio, 00169, Italia",
+        "confidence": "high"
+      },
+      "applied": false
+    },
+    {
+      "id": 12,
+      "youtubeVideoId": "Pi8B2cT7Fac",
+      "title": "위생 좋고 저렴한 ‘뉴욕 길바닥 음식’",
+      "descriptionSnippet": "오늘은 뉴욕 차이나타운에서 위생이 아주 좋고 (A급) 가격은 저렴한 길거리 음식을 먹었습니다. 저는 매장에서 사 온 창펀을 길바닥에서 쭈그리고 앉아서 먹었네요. Yi Ji Shi Mo라고 광동식 창펀 전문점인데 맛있습니다.\n\nInstagram: @NYeat.ins\nTikTok: @NYeat.tiktok\n\n#뉴욕 #뉴욕맛집 #뉴욕브이로그 #뉴욕세끼",
+      "suggested": {
+        "lat": 40.7164913,
+        "lng": -73.9962504,
+        "place": "Chinatown",
+        "placeName": "뉴욕 차이나타운",
+        "address": "Chinatown, Lower Manhattan, Manhattan, New York County, New York, 10013, United States",
+        "confidence": "high"
+      },
+      "applied": false
+    },
+    {
+      "id": 13,
+      "youtubeVideoId": "OLbYcO9wEwU",
+      "title": "The realistic size of the American-style single-serving burger set",
+      "descriptionSnippet": "Today, I visited a famous burger joint in Austin, Texas. They're called Hopdoddy and they use local Texas beef, Wagyu, and other ingredients. Everything from the burgers to the sides, like the sweet potato fries and baby cabbage, is delicious. However, tipping is a bit tricky.\n\nInstagram: @NYeat.ins",
+      "suggested": {
+        "lat": 36.0931,
+        "lng": -115.175,
+        "place": "라스베가스",
+        "placeName": "Gordon Ramsay Burger",
+        "address": "3667 S Las Vegas Blvd, Planet Hollywood, Las Vegas, NV 89109, USA",
+        "confidence": "medium"
+      },
+      "applied": false
+    },
+    {
+      "id": 14,
+      "youtubeVideoId": "s8shoxtUj_I",
+      "title": "The American diet makes Asian pancreases sick.",
+      "descriptionSnippet": "Today, I was in Austin, Texas, and after eating a ton of barbecue, I decided I couldn't eat any more, so I decided to eat healthy. I bought guacamole, tomato salsa, and other ingredients at Whole Foods, ramen at Target, and my friend got Vietnamese pho. Still, Asian food is perfect for the Korean pa",
+      "suggested": {
+        "lat": 30.2711286,
+        "lng": -97.7436995,
+        "place": "Austin",
+        "placeName": "Austin",
+        "address": "Austin, Travis County, Texas, United States",
+        "confidence": "high"
+      },
+      "applied": false
+    },
+    {
+      "id": 15,
+      "youtubeVideoId": "mzgeYr4H-R4",
+      "title": "Foods you should only eat once a year",
+      "descriptionSnippet": "Today, I visited Terry Black BBQ, a Texas barbecue mecca in Austin, Texas. It's similar to Franklin BBQ, a nearby restaurant that Meat Man recently visited, but it's much larger and has a shorter wait.\n\nInstagram: @NYeat.ins\nTikTok: @NYeat.tiktok\n\n#NewYork #NewYorkRestaurants #NewYorkVlog #NewYorkMe",
+      "suggested": {
+        "lat": 40.7478,
+        "lng": -73.9869,
+        "place": "뉴욕",
+        "placeName": "New York",
+        "address": "New York, NY, USA",
+        "confidence": "low"
+      },
+      "applied": false
+    },
+    {
+      "id": 16,
+      "youtubeVideoId": "_2D0upYVrfc",
+      "title": "Americans' 'Jjajangmyeon Jjamppong' position",
+      "descriptionSnippet": "Today, I tried Tex-Mex, a famous dish from Texas, USA. It's a variation of Mexican cuisine in the US, and it's similar to Korean jajangmyeon (black bean noodles) and Chinese food.\n\nInstagram: @NYeat.ins\nTikTok: @NYeat.tiktok\n\n#NewYork #NewYorkRestaurants #NewYorkVlog #NewYorkMeals",
+      "suggested": {
+        "lat": 36.1337324,
+        "lng": -80.2782636,
+        "place": "Subway",
+        "placeName": "the US",
+        "address": "Subway, The, Eure Drive, Reynolda Village, Winston-Salem, Forsyth County, North Carolina, 27109, United States",
+        "confidence": "high"
+      },
+      "applied": false
+    },
+    {
+      "id": 17,
+      "youtubeVideoId": "6qpNtdaP2eI",
+      "title": "Really bad real American food",
+      "descriptionSnippet": "Today, I visited a bakery cafe in Austin, Texas. It had great reviews and was a local favorite, so I was recommended it by an American friend. But as expected, American restaurants really don't taste that good.\n\nInstagram: @NYeat.ins\nTikTok: @NYeat.tiktok\n\n#NewYork #NewYorkRestaurants #NewYorkVlog #",
+      "suggested": {
+        "lat": 40.7128,
+        "lng": -74.006,
+        "place": "미국",
+        "placeName": "USA",
+        "address": "USA",
+        "confidence": "medium"
+      },
+      "applied": false
+    },
+    {
+      "id": 18,
+      "youtubeVideoId": "jbCriQ8zGu8",
+      "title": "Tesla's Self-Driving Taxi",
+      "descriptionSnippet": "Continuing from the last video, today I rode a robotaxi, Tesla's self-driving taxi service, in Austin, Texas. Similar to Google's Waymo and Amazon's Zoox, it's currently operating in the US.\n\nInstagram: @NYeat.ins\nTikTok: @NYeat.tiktok\n\n#NewYork #NewYorkRestaurants #NewYorkVlog #NewYorkMeals",
+      "suggested": {
+        "lat": 30.2711286,
+        "lng": -97.7436995,
+        "place": "Austin",
+        "placeName": "Austin",
+        "address": "Austin, Travis County, Texas, United States",
+        "confidence": "high"
+      },
+      "applied": false
+    },
+    {
+      "id": 19,
+      "youtubeVideoId": "LUYb50BqUig",
+      "title": "Tesla's self-driving taxis are currently in operation.",
+      "descriptionSnippet": "Today, I rode a Tesla robotaxi, a self-driving taxi service currently in operation. It's only available in Austin, Texas, and the Bay Area, California, and it's amazing. It's a completely different experience from Google's Waymo or Amazon's Zoox.\n\nInstagram: @NYeat.ins\nTikTok: @NYeat.tiktok\n\n#NewYor",
+      "suggested": {
+        "lat": 44.3169766,
+        "lng": -74.1466169,
+        "place": "Operation",
+        "placeName": "operation",
+        "address": "Operation, Village of Saranac Lake, Town of Harrietstown, Franklin County, New York, 12983, United States",
+        "confidence": "high"
+      },
+      "applied": false
+    },
+    {
+      "id": 20,
+      "youtubeVideoId": "7HpYesOSjps",
+      "title": "Despite the name",
+      "descriptionSnippet": "Today, I tried Japan's famous Ohayo Jersey Milk Pudding again. I tried the regular milk flavor before, but this time I tried it with a caffe latte (coffee) flavor. Specifically, it's a pudding made with milk from cows from the British Isle of Jersey.\n\nInstagram: @NYeat.ins\nTikTok: @NYeat.tiktok\n\n#Ne",
+      "suggested": {
+        "lat": 35.6762,
+        "lng": 139.6503,
+        "place": "도쿄",
+        "placeName": "Tokyo",
+        "address": "Tokyo, Japan",
+        "confidence": "medium"
+      },
+      "applied": false
+    },
+    {
+      "id": 21,
+      "youtubeVideoId": "nTKmmfcDIcA",
+      "title": "Traditional Japanese home cooking that even Japanese people don't eat because it's expensive",
+      "descriptionSnippet": "Today, I tried obanzai in Kyoto, Japan. It's a traditional home-cooked meal with seasonal ingredients, and it's delicious. It's called Nakashimaya.\n\nInstagram: @NYeat.ins\nTikTok: @NYeat.tiktok\n\n#NewYork #NewYorkRestaurants #NewYorkVlog #NewYorkThreeMeals",
+      "suggested": {
+        "lat": 34.9907094,
+        "lng": 135.6934361,
+        "place": "おばんざい処 bigman 賀茂鶴",
+        "placeName": "obanzai, Kyoto, Japan",
+        "address": "おばんざい処 bigman 賀茂鶴, 水垂上桂線, 上桂西居町, 西京区, 京都市, 京都府, 615-0000, 日本",
+        "confidence": "high"
+      },
+      "applied": false
+    },
+    {
+      "id": 22,
+      "youtubeVideoId": "OKEDv4VTPZY",
+      "title": "What Korea definitely does better than Japan",
+      "descriptionSnippet": "Today, I tried taiyaki, a winter street food in Osaka, Japan. Also known as taiyaki, it's the originator of Korean bungeoppang (fish-shaped bread) and ingeoppang (fish-shaped bread). It's a bit pricier than in Korea.\n\nInstagram: @NYeat.ins\nTikTok: @NYeat.tiktok\n\n#NewYork #NewYorkRestaurants #NewYork",
+      "suggested": {
+        "lat": 35.6762,
+        "lng": 139.6503,
+        "place": "도쿄",
+        "placeName": "Tokyo",
+        "address": "Tokyo, Japan",
+        "confidence": "medium"
+      },
+      "applied": false
+    },
+    {
+      "id": 23,
+      "youtubeVideoId": "ETS29-TLFnk",
+      "title": "Gyukatsu",
+      "descriptionSnippet": "Today, we're visiting Kyoto Katsugyu Honten, a famous gyukatsu restaurant in Kyoto. Here, you can enjoy real sirloin, tenderloin, and other cuts, not molded meat.\n\nInstagram: @NYeat.ins\nTikTok: @NYeat.tiktok\n\n#NewYork #NewYorkRestaurants #NewYorkVlog #NewYorkMeals",
+      "suggested": {
+        "lat": 35.6762,
+        "lng": 139.6503,
+        "place": "도쿄",
+        "placeName": "Tokyo",
+        "address": "Tokyo, Japan",
+        "confidence": "medium"
+      },
+      "applied": false
+    },
+    {
+      "id": 24,
+      "youtubeVideoId": "kR50rj5htfk",
+      "title": "A cost-effective chain store that makes noodles directly in Japan",
+      "descriptionSnippet": "Today, I ordered \"Sanuki Udon,\" one of Japan's three most famous udon noodles. It's from Marugame Seimen, a restaurant that also has a Korean branch, and the noodles are hand-made on-site, making them incredibly delicious.\n\nInstagram: @NYeat.ins\nTikTok: @NYeat.tiktok\n\n#NewYork #NewYorkRestaurants #N",
+      "suggested": {
+        "lat": 35.6762,
+        "lng": 139.6503,
+        "place": "도쿄",
+        "placeName": "Tokyo",
+        "address": "Tokyo, Japan",
+        "confidence": "medium"
+      },
+      "applied": false
+    },
+    {
+      "id": 25,
+      "youtubeVideoId": "QGBiepFBrrY",
+      "title": "What happens when you order lobster on the streets of New York?",
+      "descriptionSnippet": "Today, I tried the Bryant Park Lobster Butter Corn Sandwich, arguably the most expensive street food in New York. Think of it as a lobster roll, but a small cone costs a whopping 51,000 won.\n\nInstagram: @NYeat.ins\nTikTok: @NYeat.tiktok\n\n#NewYork #NewYorkRestaurants #NewYorkVlog #NewYorkMeals",
+      "suggested": {
+        "lat": 40.7484,
+        "lng": -73.9857,
+        "place": "뉴욕 맨해튼",
+        "placeName": "Sushi Sho",
+        "address": "New York, NY, USA",
+        "confidence": "medium"
+      },
+      "applied": false
+    },
+    {
+      "id": 26,
+      "youtubeVideoId": "Az0a_YmuRQw",
+      "title": "New York chicken skewers that have completely lost their original intentions...",
+      "descriptionSnippet": "Today, I tried the signature gourmet chicken skewers at Bryant Park in New York City. They're famous for their chicken portraits and their annual price increases, but this year, the gourmet chicken skewers were surprisingly unavailable. Oh, and they're still expensive.\n\nInstagram: @NYeat.ins\nTikTok:",
+      "suggested": {
+        "lat": 40.7484,
+        "lng": -73.9857,
+        "place": "뉴욕 맨해튼",
+        "placeName": "Sushi Sho",
+        "address": "New York, NY, USA",
+        "confidence": "medium"
+      },
+      "applied": false
+    },
+    {
+      "id": 27,
+      "youtubeVideoId": "frfOoH3AHv4",
+      "title": "American Street Food Bomb Toast (Hope Edition)",
+      "descriptionSnippet": "Today, I had a Texas BBQ grilled cheese sandwich at Bryant Park in New York. As expected from a Christmas market, it was on the pricey side, but it was still one of the most delicious meals I've had at the park, and the food was hot, which was nice.\n\nInstagram: @NYeat.ins\nTikTok: @NYeat.tiktok\n\n#New",
+      "suggested": {
+        "lat": 40.7484,
+        "lng": -73.9857,
+        "place": "뉴욕 맨해튼",
+        "placeName": "Sushi Sho",
+        "address": "New York, NY, USA",
+        "confidence": "medium"
+      },
+      "applied": false
+    },
+    {
+      "id": 28,
+      "youtubeVideoId": "oGbsjPYaXGo",
+      "title": "Expensive but Delicious New York Street Food (Hope Edition)",
+      "descriptionSnippet": "Today, I tried tomato basil soup at Bryant Park in New York. It was a bit pricey because it was a winter Christmas market, but the long line and crowds made it a delicious meal.\n\nInstagram: @NYeat.ins\nTikTok: @NYeat.tiktok\n\n#NewYork #NewYorkRestaurants #NewYorkVlog #NewYorkMeals",
+      "suggested": {
+        "lat": 40.7484,
+        "lng": -73.9857,
+        "place": "뉴욕 맨해튼",
+        "placeName": "Sushi Sho",
+        "address": "New York, NY, USA",
+        "confidence": "medium"
+      },
+      "applied": false
+    },
+    {
+      "id": 29,
+      "youtubeVideoId": "aMXpXfBq2AQ",
+      "title": "American street food",
+      "descriptionSnippet": "Today, I tried street food in Bryant Park, New York, a place known for its endocrine-disrupting properties. They even boiled the entire dish in plastic wrap. The food was meatballs.\n\nInstagram: @NYeat.ins\nTikTok: @NYeat.tiktok\n\n#NewYork #NewYorkRestaurants #NewYorkVlog #NewYorkMeals",
+      "suggested": {
+        "lat": 40.7484,
+        "lng": -73.9857,
+        "place": "뉴욕 맨해튼",
+        "placeName": "Sushi Sho",
+        "address": "New York, NY, USA",
+        "confidence": "medium"
+      },
+      "applied": false
+    },
+    {
+      "id": 30,
+      "youtubeVideoId": "i88CIBVvIiE",
+      "title": "Gwanghwamun Park(?) Christmas Market lol",
+      "descriptionSnippet": "Today, I bought a snack at the Bryant... or rather, Gwanghwamun Park(?) Square Christmas Market. It's a place that's known for its generous Korean food feast, and I bought a churro.\n\nInstagram: @NYeat.ins\nTikTok: @NYeat.tiktok\n\n#NewYork #NewYorkRestaurants #NewYorkVlog #NewYorkMeals",
+      "suggested": {
+        "lat": 37.572,
+        "lng": 126.9794,
+        "place": "서울 광화문",
+        "placeName": "Gwanghwamun",
+        "address": "서울특별시 종로구 세종대로",
+        "confidence": "medium"
+      },
+      "applied": false
+    },
+    {
+      "id": 31,
+      "youtubeVideoId": "RK3hbXSzxAA",
+      "title": "The latest news on the 2-hour wait for Bungeoppang",
+      "descriptionSnippet": "Today, I visited Namyeong Station's yingeoppang, the best red bean bungeoppang in Korea, after a long time. It used to be a street vendor, but now they have their own store, and the price has gone up a bit: 3 for 2,000 won. Still, it's absolutely delicious.\n\nInstagram: @NYeat.ins\nTikTok: @NYeat.tikt",
+      "suggested": {
+        "lat": 40.7478,
+        "lng": -73.9869,
+        "place": "뉴욕",
+        "placeName": "New York",
+        "address": "New York, NY, USA",
+        "confidence": "low"
+      },
+      "applied": false
+    },
+    {
+      "id": 32,
+      "youtubeVideoId": "5VeaybEerDc",
+      "title": "The latest news in Seoul: Fake(?) salt bread is priced at 6",
+      "descriptionSnippet": "Today, I visited Artist Bakery, a salt bread specialty store run by the London Bagel Museum, a famous bakery in Seoul. The wait can be a bit long, but they have a variety of breads. However, the prices are a bit on the high side.\n\nInstagram: @NYeat.ins\nTikTok: @NYeat.tiktok\n\n#NewYork #NewYorkRestaur",
+      "suggested": {
+        "lat": 36.1298,
+        "lng": -115.1539,
+        "place": "라스베가스",
+        "placeName": "Las Vegas Convention Center",
+        "address": "3150 Paradise Rd, Las Vegas, NV 89109, USA",
+        "confidence": "medium"
+      },
+      "applied": false
+    },
+    {
+      "id": 33,
+      "youtubeVideoId": "pkA032m7Z6Q",
+      "title": "Gwanghwamun Gukbap",
+      "descriptionSnippet": "Today's feature is Gwanghwamun Gukbap, one of only six Michelin-starred restaurants in Korea. Located in Gwanghwamun, it serves dishes like pork gomtang (pork bone soup) and boiled pork. They're delicious.\n\nInstagram: @NYeat.ins\nTikTok: @NYeat.tiktok\n\n#NewYork #NewYorkRestaurants #NewYorkVlog #NewYo",
+      "suggested": {
+        "lat": 36.638392,
+        "lng": 127.6961188,
+        "place": "대한민국",
+        "placeName": "Korea",
+        "address": "대한민국",
+        "confidence": "high"
+      },
+      "applied": false
+    },
+    {
+      "id": 34,
+      "youtubeVideoId": "LqCxhULPrEI",
+      "title": "Food that was delicious when I was young",
+      "descriptionSnippet": "Today, I visited Grandma Mabokrim's Tteokbokki, the most famous tteokbokki place in Sindangdong. They're famous for their instant tteokbokki.\n\nInstagram: @NYeat.ins\nTikTok: @NYeat.tiktok\n\n#NewYork #NewYorkRestaurants #NewYorkVlog #NewYorkMeals",
+      "suggested": {
+        "lat": 40.7478,
+        "lng": -73.9869,
+        "place": "뉴욕",
+        "placeName": "New York",
+        "address": "New York, NY, USA",
+        "confidence": "low"
+      },
+      "applied": false
+    },
+    {
+      "id": 35,
+      "youtubeVideoId": "Ums-I6G9Sv0",
+      "title": "1",
+      "descriptionSnippet": "Today's stop is Susu Hotteok, located next to Seokchon Lake in Jamsil. In the summer, they sell sweet corn, and in the winter, they sell hotteok. It's only 1,500 won, but it's incredibly filling and delicious. I recommend it as a winter snack instead of bungeoppang (fish-shaped bread).\n\nInstagram: @",
+      "suggested": {
+        "lat": 37.5132169,
+        "lng": 127.1001365,
+        "place": "잠실",
+        "placeName": "Jamsil",
+        "address": "잠실, 265, 올림픽로, 신천동, 잠실6동, 송파구, 서울특별시, 05510, 대한민국",
+        "confidence": "high"
+      },
+      "applied": false
+    },
+    {
+      "id": 36,
+      "youtubeVideoId": "fZuHPAmOds4",
+      "title": "Sundae Gukbap is 12",
+      "descriptionSnippet": "Today, I visited Cheongwaok, a sundae soup restaurant near Seokchon Lake in Jamsil. While sundae soup is now priced at 12,000 won, the broth is clean, odorless, and quite tasty.\n\nInstagram: @NYeat.ins\nTikTok: @NYeat.tiktok\n\n#NewYork #NewYorkRestaurants #NewYorkVlog #NewYorkMeals",
+      "suggested": {
+        "lat": 40.7478,
+        "lng": -73.9869,
+        "place": "뉴욕",
+        "placeName": "New York",
+        "address": "New York, NY, USA",
+        "confidence": "low"
+      },
+      "applied": false
+    },
+    {
+      "id": 37,
+      "youtubeVideoId": "hZHDKeW65Fg",
+      "title": "A common American snack: fried pickles",
+      "descriptionSnippet": "Today, I tried fried pickles, a dish Americans love but Asians find incomprehensible. They sold pickles almost like kimchi restaurants in Korea, and they cost 21,500 won.\n\nInstagram: @NYeat.ins\nTikTok: @NYeat.tiktok\n\n#NewYork #NewYorkRestaurants #NewYorkVlog #NewYorkMeals",
+      "suggested": {
+        "lat": 36.638392,
+        "lng": 127.6961188,
+        "place": "대한민국",
+        "placeName": "Korea",
+        "address": "대한민국",
+        "confidence": "high"
+      },
+      "applied": false
+    },
+    {
+      "id": 38,
+      "youtubeVideoId": "16JElPXs9xA",
+      "title": "New York hot dog (21",
+      "descriptionSnippet": "Today, I tried one of Bryant Park's signature hot dogs. It's K-style, with fries on the side, and I had a half-and-half mozzarella. Oh, and the price is now 21,000 won, probably due to the exchange rate fluctuating every year.\n\nInstagram: @NYeat.ins\nTikTok: @NYeat.tiktok\n\n#NewYork #NewYorkRestaurant",
+      "suggested": {
+        "lat": 40.7484,
+        "lng": -73.9857,
+        "place": "뉴욕 맨해튼",
+        "placeName": "Sushi Sho",
+        "address": "New York, NY, USA",
+        "confidence": "medium"
+      },
+      "applied": false
+    },
+    {
+      "id": 39,
+      "youtubeVideoId": "77_v1WxcGbI",
+      "title": "Instant hand-made noodles that Koreans would love",
+      "descriptionSnippet": "Today, I tried hand-pulled noodles at Bryant Park in New York City. Also known as \"Biang Biang Men\" or \"Yu Po Men,\" it's a Chinese Xi'an-style hand-pulled noodle dish. This time, though, it's the despair side.\n\nInstagram: @NYeat.ins\nTikTok: @NYeat.tiktok\n\n#NewYork #NewYorkRestaurants #NewYorkVlog #N",
+      "suggested": {
+        "lat": 40.7484,
+        "lng": -73.9857,
+        "place": "뉴욕 맨해튼",
+        "placeName": "Sushi Sho",
+        "address": "New York, NY, USA",
+        "confidence": "medium"
+      },
+      "applied": false
+    },
+    {
+      "id": 40,
+      "youtubeVideoId": "a1V0gpJJ45s",
+      "title": "American-style baked potatoes with butter",
+      "descriptionSnippet": "Today, I tried a buttered whole potato at the Bryant Park Christmas Market in New York. Considering the amount of butter, the price is somewhat understandable, and I guess this is considered a healthy(?) food in the US.\n\nInstagram: @NYeat.ins\nTikTok: @NYeat.tiktok\n\n#NewYork #NewYorkRestaurants #NewY",
+      "suggested": {
+        "lat": 40.7484,
+        "lng": -73.9857,
+        "place": "뉴욕 맨해튼",
+        "placeName": "Sushi Sho",
+        "address": "New York, NY, USA",
+        "confidence": "medium"
+      },
+      "applied": false
+    },
+    {
+      "id": 41,
+      "youtubeVideoId": "8LvH8ftZrhM",
+      "title": "Bryant Park Returns 2025-26 (Hope Edition)",
+      "descriptionSnippet": "Today's video is the 2025-26 Bryant Park return/comeback video. Haha. I've only shown you despair episodes so far, but this one is a hopeful one, full of fun and winter vibes. I went ice skating, explored the shops, and even had some hot chocolate.\n\nInstagram: @NYeat.ins\nTikTok: @NYeat.tiktok\n\n#NewY",
+      "suggested": {
+        "lat": 40.7542,
+        "lng": -73.9848,
+        "place": "뉴욕 맨해튼",
+        "placeName": "Bryant Park",
+        "address": "40th-42nd St, New York, NY 10018",
+        "confidence": "medium"
+      },
+      "applied": false
+    },
+    {
+      "id": 42,
+      "youtubeVideoId": "RFZuXQRVFo0",
+      "title": "American Saemaeul-ho(?) train business class",
+      "descriptionSnippet": "Today, I took an Amtrak local train from Washington, D.C. to New York. It was a much slower regional train, the Palmetto, than the Acela I took last time. You could say it was on par with the Saemaeul-ho. I also bought a salad in the cafe car. The burgers and hot dogs looked stunning.\n\nInstagram: @N",
+      "suggested": {
+        "lat": 55.7712029,
+        "lng": 37.6328224,
+        "place": "Business Class",
+        "placeName": "business class",
+        "address": "Business Class, Сретенский тупик, Красносельский район, Москва, Центральный федеральный округ, 107045, Россия",
+        "confidence": "high"
+      },
+      "applied": false
+    },
+    {
+      "id": 43,
+      "youtubeVideoId": "Lp3OSD7VG4U",
+      "title": "An honest review of Chef Edward Lee's restaurant",
+      "descriptionSnippet": "Today, I visited Chef Edward Lee's restaurant, Succotash Prime. It's located in Washington, D.C., and it's not a Korean restaurant, but a Southern-style restaurant. I had the spicy chili paste-based marinated chicken and pork belly wrap, but honestly, the taste and quality were disappointing for the",
+      "suggested": {
+        "lat": 38.8950368,
+        "lng": -77.0365427,
+        "place": "Washington",
+        "placeName": "Washington",
+        "address": "Washington, District of Columbia, United States",
+        "confidence": "high"
+      },
+      "applied": false
+    },
+    {
+      "id": 44,
+      "youtubeVideoId": "TxHUlv6ApsY",
+      "title": "I tried room service at the world's best hotel.",
+      "descriptionSnippet": "Today, I tried breakfast room service at the Four Seasons Hotel in Washington, DC, one of the world's best hotel chains. I had an omelet and a vegetable smoothie. The room was really nice, and it was a wonderful experience.\n\nInstagram: @NYeat.ins\nTikTok: @NYeat.tiktok\n\n#NewYork #NewYorkRestaurants #",
+      "suggested": {
+        "lat": 36.0925,
+        "lng": -115.1766,
+        "place": "라스베가스",
+        "placeName": "Mandalay Bay",
+        "address": "3950 S Las Vegas Blvd, Las Vegas, NV 89119, USA",
+        "confidence": "medium"
+      },
+      "applied": false
+    },
+    {
+      "id": 45,
+      "youtubeVideoId": "P_-WIOcqOi0",
+      "title": "A high-end steakhouse right next to the White House",
+      "descriptionSnippet": "Today, I visited a steakhouse right next to the White House in Washington, D.C., the capital of the United States. I had the American-style ribeye, and it was delicious, as expected from a capitalist country.\n\nInstagram: @NYeat.ins\nTikTok: @NYeat.tiktok\n\n#NewYork #NewYorkRestaurants #NewYorkVlog #Ne",
+      "suggested": {
+        "lat": 36.0925,
+        "lng": -115.1766,
+        "place": "라스베가스",
+        "placeName": "Peter Luger Steakhouse",
+        "address": "Las Vegas, NV, USA",
+        "confidence": "medium"
+      },
+      "applied": false
+    },
+    {
+      "id": 46,
+      "youtubeVideoId": "X5fj9Wmsyls",
+      "title": "KTX(?) train business class in the US",
+      "descriptionSnippet": "Today, I rode the Amtrak Acela, America's KTX. Last time, I showed you the train from New York to Boston, and this time, it's from New York to Washington, D.C. I also enjoyed a delicious cheese tray snack. The train tickets were a bit pricey, though.\n\nInstagram: @NYeat.ins\nTikTok: @NYeat.tiktok\n\n#Ne",
+      "suggested": {
+        "lat": 9.9492433,
+        "lng": 76.331737,
+        "place": "Livanta Business Class Hotel",
+        "placeName": "business class in",
+        "address": "Livanta Business Class Hotel, Kochi - Dhanushkodi Road, Poonithura, Petta, Thrippunithura, Kanayannur, Ernakulam, Kerala, 682304, India",
+        "confidence": "high"
+      },
+      "applied": false
+    },
+    {
+      "id": 47,
+      "youtubeVideoId": "7Zk_8Z9uH2Y",
+      "title": "America is happy because it doesn't care about health.",
+      "descriptionSnippet": "Today, I tried American specialties at an American orchard and apple farm. Things like apple cider donuts, chicken tenders, and a turkey sandwich. Haha. They're not healthy at all, but they're delicious.\n\nInstagram: @NYeat.ins\nTikTok: @NYeat.tiktok\n\n#NewYork #NewYorkRestaurants #NewYorkVlog #NewYork",
+      "suggested": {
+        "lat": 40.8077797,
+        "lng": -84.0572225,
+        "place": "Allen County",
+        "placeName": "all",
+        "address": "Allen County, Ohio, United States",
+        "confidence": "high"
+      },
+      "applied": false
+    },
+    {
+      "id": 48,
+      "youtubeVideoId": "H3rHbBRJojw",
+      "title": "The scale of American farms rivals that of large supermarkets.",
+      "descriptionSnippet": "Today, we went to an apple orchard, one of the most common outdoor activities and traditional games in the US. We picked apples, picked vegetables, and bought snacks. There were a variety of apples, and we had a great time near New York in the northeastern US.\n\nInstagram: @NYeat.ins\nTikTok: @NYeat.t",
+      "suggested": {
+        "lat": 40.7484,
+        "lng": -73.9857,
+        "place": "뉴욕 맨해튼",
+        "placeName": "Sushi Sho",
+        "address": "New York, NY, USA",
+        "confidence": "medium"
+      },
+      "applied": false
+    },
+    {
+      "id": 49,
+      "youtubeVideoId": "lFVh2i-7bNA",
+      "title": "A steakhouse frequented by New York's financial community",
+      "descriptionSnippet": "Today, I visited Smith & Wollensky in New York City. It's famous as the restaurant where Warren Buffett hosts his charity auction luncheon and also appeared in the film \"The Devil Wears Prada.\" More importantly, it's said to be frequented by local Wall Street financial professionals.\n\nInstagram: @NY",
+      "suggested": {
+        "lat": 40.7552548,
+        "lng": -73.9709515,
+        "place": "Smith & Wollensky",
+        "placeName": "Smith & Wollensky, New York City",
+        "address": "Smith & Wollensky, 797, 3rd Avenue, Turtle Bay, Manhattan Community Board 6, Manhattan, New York County, New York, 10022, United States",
+        "confidence": "high"
+      },
+      "applied": false
+    },
+    {
+      "id": 50,
+      "youtubeVideoId": "f17V823jmfM",
+      "title": "If you like New York pizza",
+      "descriptionSnippet": "Today, I visited L'industrie Pizza, a local favorite in New York. Best known for its burrata, fig bacon pizza, and truffle pizza, it's no exaggeration to say it's currently the most popular pizza place in New York.\n\nInstagram: @NYeat.ins\nTikTok: @NYeat.tiktok\n\n#NewYork #NewYorkRestaurants #NewYorkVl",
+      "suggested": {
+        "lat": 40.7484,
+        "lng": -73.9857,
+        "place": "뉴욕 맨해튼",
+        "placeName": "Sushi Sho",
+        "address": "New York, NY, USA",
+        "confidence": "medium"
+      },
+      "applied": false
+    }
+  ]
+}

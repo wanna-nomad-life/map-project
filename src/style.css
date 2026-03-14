@@ -1,0 +1,1924 @@
+/* YouTube 스타일 - 다크 테마 */
+:root {
+  --yt-bg: #0f0f0f;
+  --yt-bg-secondary: #212121;
+  --yt-bg-tertiary: #272727;
+  --yt-bg-hover: #272727;
+  --yt-bg-active: #3f3f3f;
+  --yt-text-primary: #f1f1f1;
+  --yt-text-secondary: #aaaaaa;
+  --yt-text-muted: #717171;
+  --yt-red: #ff0000;
+  --yt-border: #303030;
+  --yt-radius: 8px;
+  --yt-radius-lg: 12px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: 'Roboto', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--yt-bg);
+  color: var(--yt-text-primary);
+}
+
+#app {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  width: 100%;
+}
+
+/* 왼쪽 네비게이션 바 */
+#sidebar-nav {
+  flex-shrink: 0;
+  width: 72px;
+  background: var(--yt-bg-secondary);
+  border-right: 1px solid var(--yt-border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 0;
+  gap: 4px;
+}
+
+#nav-menu-btn {
+  margin-bottom: 8px;
+}
+
+#nav-menu-btn .nav-icon-wrap {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--yt-border);
+  border-radius: 50%;
+  background: transparent;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 8px;
+  border: none;
+  background: transparent;
+  color: var(--yt-text-primary);
+  cursor: pointer;
+  transition: background 0.15s;
+  border-radius: var(--yt-radius);
+  width: 100%;
+  min-width: 0;
+}
+
+.nav-item:hover {
+  background: var(--yt-bg-hover);
+}
+
+.nav-item.active {
+  color: var(--yt-red);
+}
+
+.nav-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.nav-label {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+#sidebar-nav.collapsed {
+  width: 56px;
+}
+
+#sidebar-nav.collapsed .nav-label {
+  display: none;
+}
+
+#main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  min-height: 0;
+  min-width: 0;
+  position: relative;
+}
+
+/* 페이지 전환 */
+.page-hidden {
+  display: none !important;
+}
+
+/* 구독 페이지일 때 홈의 쇼츠 섹션 숨김 */
+#main-content:has(#subscriptions-page:not(.page-hidden)) #shorts-section {
+  display: none !important;
+}
+
+#home-page {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  min-height: 0;
+  min-width: 0;
+}
+
+/* 구독 페이지 - YouTube 스타일 */
+#subscriptions-page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  background: var(--yt-bg);
+  overflow-y: auto;
+}
+
+.subs-header {
+  padding: 24px 24px 16px;
+  border-bottom: 1px solid var(--yt-border);
+  position: sticky;
+  top: 0;
+  background: var(--yt-bg);
+  z-index: 10;
+}
+
+.subs-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--yt-text-primary);
+  margin-bottom: 16px;
+}
+
+.subs-search-wrap {
+  margin-bottom: 16px;
+  max-width: 360px;
+}
+
+.subs-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.subs-chip {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  background: var(--yt-bg-tertiary);
+  color: var(--yt-text-primary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.subs-chip:hover {
+  background: var(--yt-bg-hover);
+}
+
+.subs-chip.active {
+  background: var(--yt-text-primary);
+  color: var(--yt-bg);
+}
+
+.subs-slider-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 20px 0;
+  position: relative;
+}
+
+.subs-slider-btn {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: var(--yt-bg-tertiary);
+  color: var(--yt-text-primary);
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+  z-index: 2;
+}
+
+.subs-slider-btn:hover {
+  background: var(--yt-bg-hover);
+}
+
+.subs-slider-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.subs-channels {
+  flex: 1;
+  display: flex;
+  gap: 20px;
+  padding: 0 16px;
+  overflow-x: auto;
+  overflow-y: visible;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.subs-channels::-webkit-scrollbar {
+  display: none;
+}
+
+.subs-channel-card-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.subs-channel-card-wrap.selected .subs-channel-card {
+  background: var(--yt-bg-hover);
+  outline: 2px solid var(--yt-red);
+  outline-offset: -2px;
+}
+
+.subs-channel-settings-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--yt-text-muted);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 50%;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.subs-channel-settings-btn:hover {
+  background: var(--yt-bg-hover);
+  color: var(--yt-text-primary);
+}
+
+.subs-channel-menu {
+  position: absolute;
+  top: 36px;
+  right: 0;
+  min-width: 120px;
+  background: var(--yt-bg-secondary);
+  border: 1px solid var(--yt-border);
+  border-radius: var(--yt-radius);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  z-index: 10;
+  overflow: hidden;
+}
+
+.subs-channel-menu.hidden {
+  display: none;
+}
+
+.subs-channel-menu-item {
+  display: block;
+  width: 100%;
+  padding: 10px 16px;
+  border: none;
+  background: none;
+  color: var(--yt-text-primary);
+  font-size: 0.875rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.subs-channel-menu-item:hover {
+  background: var(--yt-bg-hover);
+}
+
+.subs-channel-menu-item + .subs-channel-menu-item {
+  border-top: 1px solid var(--yt-border);
+}
+
+.subs-channel-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+  padding: 18px 12px;
+  border-radius: var(--yt-radius-lg);
+  cursor: pointer;
+  transition: background 0.15s;
+  text-decoration: none;
+  color: inherit;
+}
+
+.subs-channel-card:hover {
+  background: var(--yt-bg-hover);
+}
+
+.subs-channel-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--yt-bg-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--yt-text-muted);
+}
+
+.subs-channel-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--yt-text-primary);
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 108px;
+}
+
+.subs-channel-subs {
+  font-size: 0.75rem;
+  color: var(--yt-text-secondary);
+}
+
+.subs-channel-add-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 18px 16px;
+  min-width: 108px;
+  border: 2px dashed var(--yt-border);
+  border-radius: var(--yt-radius-lg);
+  background: transparent;
+  color: var(--yt-text-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.subs-channel-add-btn:hover {
+  border-color: var(--yt-red);
+  color: var(--yt-red);
+  background: rgba(255, 0, 0, 0.05);
+}
+
+.subs-channel-add-icon {
+  font-size: 2rem;
+  font-weight: 300;
+  line-height: 1;
+}
+
+.subs-channel-add-label {
+  font-size: 0.8rem;
+}
+
+/* 채널 추가 모달 */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.modal-overlay.hidden {
+  display: none;
+}
+
+.modal-content {
+  background: var(--yt-bg-secondary);
+  border-radius: var(--yt-radius-lg);
+  padding: 24px;
+  min-width: 360px;
+  max-width: 90vw;
+}
+
+.modal-content-compact {
+  min-width: 280px;
+  padding: 20px;
+}
+
+.modal-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--yt-text-primary);
+}
+
+.modal-desc {
+  font-size: 0.875rem;
+  color: var(--yt-text-secondary);
+  margin-bottom: 16px;
+}
+
+.add-url-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.add-url-row .modal-input {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.modal-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--yt-border);
+  border-radius: 8px;
+  background: var(--yt-bg);
+  color: var(--yt-text-primary);
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+}
+
+.modal-input:focus {
+  outline: none;
+  border-color: var(--yt-red);
+}
+
+.modal-input::placeholder {
+  color: var(--yt-text-muted);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.modal-btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+}
+
+.modal-btn-cancel {
+  background: var(--yt-bg-tertiary);
+  color: var(--yt-text-primary);
+}
+
+.modal-btn-cancel:hover {
+  background: var(--yt-bg-hover);
+}
+
+.modal-btn-confirm {
+  background: var(--yt-red);
+  color: white;
+}
+
+.modal-btn-confirm:hover {
+  background: #cc0000;
+}
+
+.channel-search-results {
+  max-height: 240px;
+  overflow-y: auto;
+  margin-bottom: 16px;
+  border: 1px solid var(--yt-border);
+  border-radius: 8px;
+  background: var(--yt-bg);
+}
+
+.channel-search-empty,
+.channel-search-loading {
+  padding: 16px;
+  color: var(--yt-text-muted);
+  font-size: 0.875rem;
+  text-align: center;
+  margin: 0;
+}
+
+.shorts-collecting-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+}
+
+.shorts-collecting-text {
+  display: inline-block;
+  padding: 10px 20px;
+  background: #dc3545;
+  color: white;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  border-radius: 8px;
+}
+
+.shorts-collecting-progress-wrap {
+  width: 100%;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.shorts-collecting-progress-bar {
+  height: 100%;
+  background: #dc3545;
+  border-radius: 4px;
+  transition: width 0.2s ease;
+}
+
+.shorts-collecting-percent {
+  font-size: 0.8125rem;
+  color: var(--yt-text-secondary);
+  font-weight: 500;
+}
+
+.channel-search-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  background: none;
+  color: var(--yt-text-primary);
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s;
+}
+
+.channel-search-item:hover {
+  background: var(--yt-bg-hover);
+}
+
+.channel-search-item + .channel-search-item {
+  border-top: 1px solid var(--yt-border);
+}
+
+.channel-search-thumb {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.channel-search-thumb-placeholder {
+  background: var(--yt-bg-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  color: var(--yt-text-muted);
+}
+
+.channel-search-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.channel-search-name {
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.channel-search-subs {
+  font-size: 0.75rem;
+  color: var(--yt-text-secondary);
+}
+
+.subs-shorts-section {
+  padding: 24px;
+  border-top: 1px solid var(--yt-border);
+}
+
+.subs-shorts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.subs-short-card {
+  flex-direction: column !important;
+  align-items: stretch !important;
+  padding: 0;
+  border-radius: var(--yt-radius-lg);
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.subs-short-card .short-thumbnail-wrap {
+  width: 100%;
+  height: 400px;
+}
+
+.subs-short-card .short-info {
+  padding: 16px;
+}
+
+.subs-short-card .short-title {
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+#map-container {
+  flex: 1;
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* YouTube 검색바 스타일 - 공통 */
+.yt-search-wrap {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  min-width: 0;
+  background: #121212;
+  border: 1px solid #303030;
+  border-radius: 40px;
+  padding: 0 4px 0 16px;
+  gap: 12px;
+  transition: border-color 0.1s, box-shadow 0.1s;
+}
+
+.yt-search-wrap:focus-within {
+  border-color: #065fd4;
+  box-shadow: inset 0 0 0 1px #065fd4;
+}
+
+.yt-search-wrap .search-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--yt-text-muted);
+  font-size: 1.125rem;
+  flex-shrink: 0;
+}
+
+.yt-search-wrap input {
+  flex: 1;
+  border: none;
+  background: none;
+  font-size: 16px;
+  outline: none;
+  color: var(--yt-text-primary);
+  min-width: 0;
+}
+
+.yt-search-wrap input::placeholder {
+  color: var(--yt-text-muted);
+}
+
+/* 홈 버튼 */
+#home-btn {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: var(--yt-radius-lg);
+  background: var(--yt-bg-secondary);
+  color: var(--yt-text-primary);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  text-decoration: none;
+}
+
+#home-btn:hover {
+  background: var(--yt-bg-hover);
+}
+
+#home-btn .home-icon {
+  font-size: 1.25rem;
+}
+
+#home-btn .home-text {
+  font-family: inherit;
+}
+
+/* 지도 오버레이 */
+#map-overlay {
+  position: absolute;
+  top: 56px;
+  left: 12px;
+  z-index: 1000;
+  max-width: calc(100% - 24px);
+}
+
+.map-search-bar-mobile,
+.map-category-chips {
+  display: none;
+}
+
+#map-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+#map-search-wrap {
+  flex: 1;
+  min-width: 200px;
+  max-width: 300px;
+}
+
+#map {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* 지도 하단 위치 정보 패널 */
+.map-location-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(15, 15, 15, 0.95);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid var(--yt-border);
+  padding: 14px 20px;
+  max-height: 140px;
+  overflow-y: auto;
+}
+
+.map-location-info .map-location-placeholder {
+  color: var(--yt-text-muted);
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.map-location-info.has-content .map-location-placeholder {
+  display: none;
+}
+
+.map-location-info .location-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--yt-text-primary);
+  margin-bottom: 4px;
+}
+
+.map-location-info .location-place {
+  font-size: 0.875rem;
+  color: var(--yt-text-secondary);
+  margin-bottom: 2px;
+}
+
+.map-location-info .location-address {
+  font-size: 0.8125rem;
+  color: var(--yt-text-muted);
+  margin-bottom: 4px;
+}
+
+.map-location-info .location-meta {
+  font-size: 0.8125rem;
+  color: var(--yt-text-muted);
+}
+
+.map-location-info .location-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.map-location-info .location-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 14px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.map-location-info .location-btn-directions {
+  background: #1a73e8;
+  color: #fff;
+}
+
+.map-location-info .location-btn-directions:hover {
+  background: #1557b0;
+}
+
+.map-location-info .location-btn-play {
+  background: #ff0000;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.map-location-info .location-btn-play:hover {
+  background: #cc0000;
+}
+
+.map-location-info .location-btn-related {
+  background: var(--yt-bg-tertiary);
+  color: var(--yt-text-primary);
+  border: 1px solid var(--yt-border);
+}
+
+.map-location-info .location-btn-related:hover {
+  background: var(--yt-bg-hover);
+}
+
+/* Leaflet 팝업 - 구글맵 스타일 장소 카드 */
+.place-card-popup .leaflet-popup-content-wrapper {
+  padding: 0;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.place-card-popup .leaflet-popup-content {
+  margin: 0;
+  min-width: 240px;
+}
+
+.leaflet-place-card {
+  padding: 14px 16px;
+  background: #fff;
+  color: #202124;
+}
+
+.place-card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+
+.place-card-place,
+.place-card-subtitle {
+  font-size: 0.875rem;
+  color: #5f6368;
+  margin-bottom: 4px;
+}
+
+.place-card-address {
+  font-size: 0.8125rem;
+  color: #5f6368;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.place-card-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.place-card-play-btn {
+  padding: 8px 14px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  background: #ff0000;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.place-card-play-btn:hover {
+  background: #cc0000;
+}
+
+.place-card-related-btn {
+  padding: 8px 14px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  border: 1px solid #dadce0;
+  border-radius: 8px;
+  background: #f1f3f4;
+  color: #202124;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.place-card-related-btn:hover {
+  background: #e8eaed;
+  border-color: #5f6368;
+}
+
+.place-card-directions {
+  display: inline-block;
+  font-size: 0.8125rem;
+  color: #1a73e8;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.place-card-directions:hover {
+  text-decoration: underline;
+}
+
+/* 지도 정보 패널 - YouTube 스타일 */
+#info-panel {
+  flex-shrink: 0;
+  width: fit-content;
+  background: var(--yt-bg-secondary);
+  padding: 16px 20px;
+  border-radius: var(--yt-radius-lg);
+  border: 1px solid var(--yt-border);
+}
+
+#info-panel h2 {
+  margin-bottom: 8px;
+  color: var(--yt-text-primary);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+#info-panel p {
+  color: var(--yt-text-secondary);
+  font-size: 0.8125rem;
+}
+
+#gps-btn {
+  padding: 10px 16px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  background: var(--yt-red);
+  color: white;
+  border: none;
+  border-radius: 18px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+#gps-btn:hover {
+  background: #cc0000;
+}
+
+#gps-btn:disabled {
+  background: var(--yt-bg-tertiary);
+  color: var(--yt-text-muted);
+  cursor: not-allowed;
+}
+
+#gps-status {
+  margin-top: 8px;
+  font-size: 0.75rem;
+  color: var(--yt-text-secondary);
+  min-height: 1.2em;
+}
+
+.admin-link {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 0.75rem;
+  color: var(--yt-text-secondary);
+  text-decoration: none;
+}
+.admin-link:hover {
+  color: var(--yt-red);
+}
+
+/* 내 위치 마커 - YouTube 컬러 */
+.my-location-marker {
+  background: none;
+  border: none;
+  position: relative;
+}
+
+.my-location-marker .my-location-pulse {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  left: -12px;
+  top: -12px;
+  background: rgba(255, 0, 0, 0.3);
+  border-radius: 50%;
+  animation: pulse 1.5s ease-out infinite;
+}
+
+.my-location-marker .my-location-dot {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  left: 6px;
+  top: 6px;
+  background: var(--yt-red);
+  border: 3px solid white;
+  border-radius: 50%;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.5); opacity: 1; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+/* 리사이즈 핸들 */
+#resize-handle {
+  flex-shrink: 0;
+  width: 1px;
+  background: var(--yt-border);
+  cursor: col-resize;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  user-select: none;
+}
+
+#resize-handle:hover,
+#resize-handle.dragging {
+  width: 4px;
+  background: var(--yt-red);
+}
+
+.resize-handle-icon {
+  color: var(--yt-text-muted);
+  font-size: 0.75rem;
+  pointer-events: none;
+}
+
+/* 쇼츠 섹션 - YouTube 사이드바 */
+#shorts-section {
+  flex-shrink: 0;
+  width: 320px;
+  min-width: 200px;
+  max-width: 80vw;
+  background: var(--yt-bg);
+  color: var(--yt-text-primary);
+  padding: 12px 12px 16px;
+  border-left: 1px solid var(--yt-border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#shorts-search-wrap {
+  margin-bottom: 12px;
+  flex-shrink: 0;
+}
+
+.shorts-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 0 12px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--yt-border);
+  flex-shrink: 0;
+}
+.shorts-list-header-text {
+  font-size: 13px;
+  color: var(--yt-text-secondary);
+}
+.shorts-list-header .place-filter-clear {
+  font-size: 12px;
+  color: var(--yt-red);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+.shorts-list-header .place-filter-clear:hover {
+  text-decoration: underline;
+}
+
+#shorts-container {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 4px;
+  container-type: inline-size;
+  container-name: shorts;
+  -webkit-overflow-scrolling: touch;
+}
+
+#shorts-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+#shorts-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#shorts-container::-webkit-scrollbar-thumb {
+  background: var(--yt-bg-tertiary);
+  border-radius: 4px;
+}
+
+#shorts-container::-webkit-scrollbar-thumb:hover {
+  background: var(--yt-text-muted);
+}
+
+/* 쇼츠 카드 - YouTube 쇼츠 스타일 */
+.shorts-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.short-card {
+  flex-shrink: 0;
+  width: 100%;
+  cursor: pointer;
+  transition: background 0.15s;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+  border-radius: var(--yt-radius-lg);
+}
+
+.short-card:hover {
+  background: var(--yt-bg-hover);
+}
+
+.short-card.selected {
+  background: var(--yt-bg-hover);
+  outline: 2px solid var(--yt-red);
+  outline-offset: -2px;
+}
+
+.short-card .short-thumbnail-wrap {
+  flex-shrink: 0;
+  width: 112px;
+  height: 168px;
+  background: var(--yt-bg-tertiary);
+  border-radius: var(--yt-radius);
+  overflow: hidden;
+}
+
+.short-card .short-placeholder {
+  width: 100%;
+  height: 100%;
+  background: var(--yt-bg-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: var(--yt-text-muted);
+}
+
+.short-card .short-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.short-card .short-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.short-card .short-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--yt-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.short-card .short-views {
+  font-size: 0.875rem;
+  color: var(--yt-text-secondary);
+  margin-top: 4px;
+}
+
+.short-card .short-map-btn {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1.25rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.short-card .short-map-btn:hover {
+  background: var(--yt-bg-active);
+}
+
+/* 400px 이상: 2열 */
+@container shorts (min-width: 400px) {
+  .shorts-list {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .short-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .short-card .short-thumbnail-wrap {
+    width: 100%;
+    height: 280px;
+  }
+
+  .short-card .short-title {
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .short-card .short-meta {
+    flex-wrap: wrap;
+  }
+}
+
+/* 600px 이상: 3열 */
+@container shorts (min-width: 600px) {
+  .shorts-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* 800px 이상: 4열 */
+@container shorts (min-width: 800px) {
+  .shorts-list {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.short-card .short-thumbnail {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 쇼츠 플레이어 */
+.hidden {
+  display: none !important;
+}
+
+#shorts-player {
+  flex: 0 0 50%;
+  background: #000;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: stretch;
+  min-width: 0;
+}
+
+#app.player-open #map-container {
+  flex: 0 0 50%;
+}
+
+#app.player-open #shorts-section {
+  display: none !important;
+}
+
+#close-player {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  font-size: 1.25rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+#close-player:hover {
+  background: rgba(0, 0, 0, 0.9);
+}
+
+#player-video-wrap {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  background: #000;
+  aspect-ratio: 9/16;
+  max-width: min(100%, 300px);
+  margin: 0 auto;
+}
+
+#player-iframe {
+  width: 100%;
+  height: 100%;
+}
+
+#player-info {
+  position: absolute;
+  bottom: 24px;
+  left: 20px;
+  right: 20px;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.player-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+#player-info #player-title {
+  font-size: 1rem;
+  font-weight: 500;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#player-info #player-views {
+  font-size: 0.8125rem;
+  color: var(--yt-text-secondary);
+}
+
+#player-yt-link {
+  margin-top: 8px;
+  font-size: 0.875rem;
+  color: #3ea6ff;
+  text-decoration: none;
+}
+
+#player-yt-link:hover {
+  text-decoration: underline;
+}
+
+.player-map-btn {
+  flex-shrink: 0;
+  padding: 8px 14px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: var(--yt-radius);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.player-map-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.player-map-btn.hidden {
+  display: none !important;
+}
+
+/* ========== 모바일 반응형 (768px 이하) ========== */
+@media (max-width: 768px) {
+  html, body {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  #app {
+    flex-direction: column;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+
+  /* 하단 네비게이션 바 - 항상 최상단에 표시 */
+  #sidebar-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: auto;
+    min-height: 56px;
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 8px 0;
+    padding-bottom: calc(8px + env(safe-area-inset-bottom, 0));
+    border-right: none;
+    border-top: 1px solid var(--yt-border);
+    z-index: 10000;
+    background: var(--yt-bg-secondary);
+  }
+
+  /* 모바일: 메뉴 버튼 숨김 */
+  #sidebar-nav #nav-menu-btn {
+    display: none !important;
+  }
+
+  #nav-menu-btn {
+    margin-bottom: 0;
+  }
+
+  #nav-menu-btn .nav-icon-wrap {
+    width: 40px;
+    height: 40px;
+  }
+
+  .nav-item {
+    flex-direction: column;
+    padding: 8px 12px;
+    min-width: 64px;
+    min-height: 48px;
+  }
+
+  .nav-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .nav-label {
+    font-size: 0.625rem;
+  }
+
+  #main-content {
+    flex: 1;
+    min-height: 0;
+    padding-bottom: 70px;
+    padding-bottom: calc(70px + env(safe-area-inset-bottom, 0));
+  }
+
+  /* 모바일: 상하 분할 (지도 상단 ~2/3, 콘텐츠 하단 ~1/3) - 네이버지도 스타일 */
+  #home-page {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    position: relative;
+  }
+
+  #map-container {
+    flex: 0 0 60vh;
+    min-height: 300px;
+    max-height: 65vh;
+    order: 1;
+  }
+
+  /* 모바일: resize-handle을 가로 바로 표시 */
+  #resize-handle {
+    display: flex !important;
+    flex-shrink: 0;
+    width: 100%;
+    height: 56px;
+    min-height: 56px;
+    background: var(--yt-bg-secondary);
+    border-top: 2px solid var(--yt-border);
+    border-bottom: 2px solid var(--yt-border);
+    cursor: ns-resize;
+    touch-action: none;
+    -webkit-tap-highlight-color: transparent;
+    align-items: center;
+    justify-content: center;
+    order: 2;
+    position: relative;
+    z-index: 500;
+  }
+
+  #resize-handle::before {
+    content: '';
+    width: 96px;
+    height: 8px;
+    background: var(--yt-red);
+    border-radius: 4px;
+  }
+
+  #resize-handle .resize-handle-icon {
+    display: none;
+  }
+
+  #resize-handle:hover,
+  #resize-handle.dragging {
+    width: 100%;
+    background: var(--yt-bg-hover);
+  }
+
+  /* 모바일: 지도/쇼츠 둘 중 하나만 전체 화면 */
+  /* 지도 모드: 지도 가득, 쇼츠 숨김 */
+  #shorts-section.shorts-collapsed {
+    display: none !important;
+  }
+  #home-page:has(#shorts-section.shorts-collapsed) #map-container {
+    flex: 1 1 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    max-height: none;
+  }
+  /* 쇼츠 모드: 쇼츠 가득, 지도 숨김 */
+  #home-page:has(#shorts-section:not(.shorts-collapsed)) #map-container {
+    display: none !important;
+  }
+  #home-page:has(#shorts-section:not(.shorts-collapsed)) #shorts-section {
+    flex: 1 1 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    height: 100%;
+  }
+  /* 지도/쇼츠 모드: 메뉴가 가려지지 않도록 padding 유지 */
+  #main-content:has(#shorts-section.shorts-collapsed),
+  #main-content:has(#shorts-section:not(.shorts-collapsed)) {
+    padding-bottom: 70px;
+    padding-bottom: calc(70px + env(safe-area-inset-bottom, 0));
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+  #main-content:has(#shorts-section.shorts-collapsed) #home-page,
+  #main-content:has(#shorts-section:not(.shorts-collapsed)) #home-page {
+    height: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+  /* 지도 모드: 기존 handle 숨김 (오버레이 사용) */
+  #home-page:has(#shorts-section.shorts-collapsed) #resize-handle {
+    display: none !important;
+  }
+  /* 쇼츠 모드: handle 상단에 표시 (탭하여 지도로) */
+  #home-page:has(#shorts-section:not(.shorts-collapsed)) #resize-handle {
+    display: flex !important;
+    order: 1;
+    flex-shrink: 0;
+  }
+  /* JS 오버레이 터치 시 시각 피드백 (드래그 중 빨간색) */
+  #mobile-shorts-drag-overlay.active .bar {
+    background: rgba(255, 0, 0, 0.9) !important;
+  }
+  /* 숨김 시 지도 하단 위치정보 패널 - 터치가 handle로 전달되도록 */
+  #home-page:has(#shorts-section.shorts-collapsed) .map-location-info {
+    background: transparent;
+    border: none;
+    pointer-events: none;
+  }
+
+  #shorts-section {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    flex: 1 0 35vh;
+    min-height: 200px;
+    border-left: none;
+    border-top: none;
+    padding: 0 16px 12px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0));
+    order: 3;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--yt-bg);
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  #shorts-container {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #shorts-search-wrap {
+    margin-bottom: 12px;
+  }
+
+  .shorts-list {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .short-card {
+    padding: 10px;
+    min-height: 48px;
+  }
+
+  .short-card .short-thumbnail-wrap {
+    width: 96px;
+    height: 144px;
+  }
+
+  /* 지도 오버레이 - 모바일: 네이버지도 스타일 */
+  #map-overlay {
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    max-width: none;
+    width: calc(100% - 16px);
+  }
+
+  #info-panel-desktop {
+    display: none !important;
+  }
+
+  .map-search-bar-mobile {
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 8px 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .map-search-bar-mobile .yt-search-wrap {
+    flex: 1;
+    min-width: 0;
+    height: 44px;
+    background: #f5f5f5;
+    border: none;
+    border-radius: 8px;
+    padding: 0 12px;
+  }
+
+  .map-search-bar-mobile .yt-search-wrap input {
+    font-size: 0.9375rem;
+    color: #333;
+  }
+
+  .map-search-bar-mobile .yt-search-wrap input::placeholder {
+    color: #888;
+  }
+
+  .map-search-bar-mobile .search-icon {
+    color: #666;
+  }
+
+  .gps-btn-circle {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border: none;
+    border-radius: 50%;
+    background: #1a73e8;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .gps-btn-circle:hover {
+    background: #1557b0;
+  }
+
+  .gps-btn-circle svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .map-category-chips {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .map-category-chips::-webkit-scrollbar {
+    display: none;
+  }
+
+  .map-chip {
+    flex-shrink: 0;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 20px;
+    background: #fff;
+    color: #333;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .map-chip:hover {
+    background: #f5f5f5;
+  }
+
+  /* 데스크톱용 - 모바일에서 숨김 */
+  #info-panel {
+    padding: 0;
+    background: transparent;
+  }
+
+  /* 홈 버튼 - 모바일에서 숨김 */
+  #home-btn {
+    display: none !important;
+  }
+
+  /* 위치 정보 패널 */
+  .map-location-info {
+    padding: 12px 16px;
+    max-height: 120px;
+  }
+
+  .map-location-info .location-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .map-location-info .location-btn {
+    min-height: 44px;
+    padding: 10px 16px;
+  }
+
+  /* 구독 페이지 */
+  #subscriptions-page {
+    padding-bottom: 80px;
+  }
+
+  .subs-header {
+    padding: 16px 16px 12px;
+  }
+
+  .subs-title {
+    font-size: 1.125rem;
+    margin-bottom: 12px;
+  }
+
+  .subs-chips {
+    gap: 6px;
+  }
+
+  .subs-chip {
+    padding: 6px 12px;
+    font-size: 0.8125rem;
+  }
+
+  .subs-slider-wrap {
+    padding: 12px 0;
+  }
+
+  .subs-shorts-section {
+    padding: 16px;
+  }
+
+  .subs-shorts-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .subs-short-card .short-thumbnail-wrap {
+    height: 280px;
+  }
+
+  /* 플레이어 - 모바일 풀스크린 */
+  #app.player-open #map-container {
+    flex: 0 0 0;
+    min-height: 0;
+    display: none;
+  }
+
+  #app.player-open #shorts-section {
+    display: none !important;
+  }
+
+  #shorts-player {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2000;
+    flex: none;
+  }
+
+  #shorts-player:not(.hidden) {
+    display: flex !important;
+  }
+
+  /* 플레이어 열림 시 스크롤 방지 */
+  body.player-open-mobile {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+  }
+
+  #close-player {
+    top: env(safe-area-inset-top, 12px);
+    right: 12px;
+    width: 44px;
+    height: 44px;
+  }
+
+  #player-video-wrap {
+    max-width: 100%;
+    flex: 1;
+  }
+
+  #player-info {
+    bottom: calc(72px + env(safe-area-inset-bottom, 0));
+    left: 16px;
+    right: 16px;
+    max-width: calc(100vw - 32px);
+  }
+
+  .player-map-btn {
+    padding: 6px 10px;
+    font-size: 0.75rem;
+  }
+
+  /* Leaflet 팝업 - 모바일 터치 영역 */
+  .place-card-popup .leaflet-popup-content {
+    min-width: 200px;
+  }
+
+  .place-card-play-btn,
+  .place-card-related-btn,
+  .place-card-directions {
+    min-height: 44px;
+    padding: 10px 14px;
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+/* 매우 작은 화면 (480px 이하) */
+@media (max-width: 480px) {
+  #map-container {
+    flex: 0 0 55vh;
+    min-height: 260px;
+    max-height: 60vh;
+  }
+
+  .short-card .short-thumbnail-wrap {
+    width: 80px;
+    height: 120px;
+  }
+
+  .subs-channel-avatar {
+    width: 48px;
+    height: 48px;
+    font-size: 1.25rem;
+  }
+
+  .subs-channel-name {
+    max-width: 80px;
+  }
+}

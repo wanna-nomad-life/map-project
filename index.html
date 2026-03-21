@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#0f0f0f" />
-    <title>Creator Map</title>
+    <title>쇼츠 위치 지도</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
@@ -107,14 +107,14 @@
       <div id="map-container">
         <button id="home-btn" type="button" title="홈">
           <span class="home-icon">🏠</span>
-          <span class="home-text">Creator Map</span>
+          <span class="home-text">쇼츠 위치 지도</span>
         </button>
         <div id="map-overlay">
           <div id="info-panel">
             <div id="map-search-bar-mobile" class="map-search-bar-mobile">
               <div id="map-search-wrap" class="yt-search-wrap">
                 <span class="search-icon">🔍</span>
-                <input type="text" id="map-search-input" placeholder="Creator Map 검색" autocomplete="off" />
+                <input type="text" id="map-search-input" placeholder="쇼츠 위치·장소 검색" autocomplete="off" />
               </div>
               <button id="gps-btn" type="button" class="gps-btn-circle" title="내 위치" aria-label="내 위치">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
@@ -126,8 +126,8 @@
               <button type="button" class="map-chip">내 위치</button>
             </div>
             <div id="info-panel-desktop">
-              <h2>지도</h2>
-              <p>마커를 클릭하거나 지도를 드래그해서 탐색하세요.</p>
+              <h2>쇼츠 위치 지도</h2>
+              <p>쇼츠에 표시된 장소를 지도에서 확인하세요. 마커를 클릭하면 영상·주소 정보를 볼 수 있습니다.</p>
               <div id="map-actions">
                 <button type="button" class="gps-btn-desktop" id="gps-btn-desktop">📍 내 위치</button>
                 <div id="map-search-wrap-desktop" class="yt-search-wrap">
@@ -142,7 +142,7 @@
         </div>
         <div id="map"></div>
         <div id="map-location-info" class="map-location-info">
-          <p class="map-location-placeholder">쇼츠를 클릭하거나 장소를 검색하면 해당 위치 정보가 표시됩니다.</p>
+          <p class="map-location-placeholder">지도 마커를 클릭하거나 장소를 검색하면 쇼츠 위치 정보가 표시됩니다.</p>
         </div>
       </div>
       <div id="resize-handle" title="드래그하여 크기 조절" role="separator" aria-label="드래그하여 쇼츠 크기 조절">
@@ -169,7 +169,10 @@
         <div id="player-info">
           <div class="player-title-row">
             <span id="player-title"></span>
-            <button id="player-show-map-btn" type="button" class="player-map-btn" title="지도에서 위치 보기">🗺️ 지도에서 위치 보기</button>
+            <div class="player-buttons">
+              <button id="player-expand-btn" type="button" class="player-map-btn" title="전체 창으로 보기">⛶ 전체 창으로 보기</button>
+              <button id="player-show-map-btn" type="button" class="player-map-btn" title="지도에서 위치 보기">🗺️ 지도에서 위치 보기</button>
+            </div>
           </div>
           <span id="player-views"></span>
           <a id="player-yt-link" href="#" target="_blank" rel="noopener">YouTube에서 보기</a>

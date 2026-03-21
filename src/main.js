@@ -1,7 +1,14 @@
+/**
+ * 쇼츠 위치 지도 - YouTube 쇼츠 주소를 지도에 표시하는 앱
+ */
 import L from 'leaflet';
 window.L = L;
 import 'leaflet.markercluster';
+import { buildPlaceCardHtml, buildDirectionsUrl, escapeHtml } from './lib/place-card.js';
+import { parseSSEStream } from './lib/sse.js';
+import { getLocationPoints, getShortsNearPlace } from './modules/shorts-location.js';
 
+// ========== 지도 초기화 ==========
 // Leaflet 기본 아이콘 경로 수정 (Webpack/Vite 번들링 시 필요)
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -31,8 +38,9 @@ function refreshMapSize() {
 setTimeout(refreshMapSize, 100);
 window.addEventListener('resize', refreshMapSize);
 
-// GPS - 내 위치 마커
+// ========== GPS (내 위치) ==========
 let myLocationMarker = null;
+let hasUserLocation = false; // 시작 시 내 위치로 설정했는지
 
 // 내 위치 아이콘 (파란색 원)
 const myLocationIcon = L.divIcon({
@@ -64,6 +72,7 @@ function showMyLocation(position) {
 
   map.setView([latitude, longitude], 16);
   updateGpsStatus(`위치: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+  hasUserLocation = true;
 }
 
 function handleGpsError(error) {
@@ -170,7 +179,7 @@ document.getElementById('nav-mypage').addEventListener('click', () => {
   setNavActive('nav-mypage');
 });
 
-// 데이터베이스 - 쇼츠 데이터 (JSON)
+// ========== 쇼츠 데이터 ==========
 let dbChannels = [];
 let subscriptionsData = [];
 let shortsData = [];
@@ -399,39 +408,8 @@ async function addFromUrl(url) {
     const contentType = res.headers.get('Content-Type') || '';
 
     if (contentType.includes('text/event-stream') && res.body) {
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = '';
-      let data = null;
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split('\n\n');
-        buffer = lines.pop() || '';
-        for (const line of lines) {
-          if (line.startsWith('data: ')) {
-            try {
-              const ev = JSON.parse(line.slice(6));
-              if (ev.type === 'progress') updateProgress(ev.percent ?? 0);
-              else if (ev.type === 'done') data = ev.result;
-              else if (ev.type === 'error') throw new Error(ev.error);
-            } catch (e) {
-              if (e instanceof SyntaxError) continue;
-              throw e;
-            }
-          }
-        }
-      }
-      if (buffer.startsWith('data: ')) {
-        try {
-          const ev = JSON.parse(buffer.slice(6));
-          if (ev.type === 'done') data = ev.result;
-          else if (ev.type === 'error') throw new Error(ev.error);
-        } catch (e) {
-          if (!(e instanceof SyntaxError)) throw e;
-        }
-      }
+      const ev = await parseSSEStream(res.body, updateProgress);
+      const data = ev?.result;
       if (!data?.ok) throw new Error(data?.error || '채널 추가 실패');
       updateProgress(100);
       await loadShortsDatabase();
@@ -628,38 +606,8 @@ async function updateChannelShorts(channelId, channelName) {
     let data = null;
     const contentType = res.headers.get('Content-Type') || '';
     if (contentType.includes('text/event-stream') && res.body) {
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = '';
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split('\n\n');
-        buffer = lines.pop() || '';
-        for (const line of lines) {
-          if (line.startsWith('data: ')) {
-            try {
-              const ev = JSON.parse(line.slice(6));
-              if (ev.type === 'progress') updateProgress(ev.percent ?? 0);
-              else if (ev.type === 'done') data = ev.result;
-              else if (ev.type === 'error') throw new Error(ev.error);
-            } catch (e) {
-              if (e instanceof SyntaxError) continue;
-              throw e;
-            }
-          }
-        }
-      }
-      if (buffer.startsWith('data: ')) {
-        try {
-          const ev = JSON.parse(buffer.slice(6));
-          if (ev.type === 'done') data = ev.result;
-          else if (ev.type === 'error') throw new Error(ev.error);
-        } catch (e) {
-          if (!(e instanceof SyntaxError)) throw e;
-        }
-      }
+      const ev = await parseSSEStream(res.body, updateProgress);
+      data = ev?.result;
     } else {
       data = await res.json().catch(() => ({}));
     }
@@ -762,7 +710,7 @@ document.getElementById('add-url-btn')?.addEventListener('click', () => {
 
 let currentPlayingShort = null;
 
-function playShort(short) {
+function playShort(short, fromMap = false) {
   const player = document.getElementById('shorts-player');
   const iframe = document.getElementById('player-iframe');
   const titleEl = document.getElementById('player-title');
@@ -781,8 +729,25 @@ function playShort(short) {
     : '';
 
   app.classList.add('player-open');
-  if (window.innerWidth <= 768) document.body.classList.add('player-open-mobile');
+  app.classList.remove('player-expanded');
+  document.body.classList.remove('player-expanded-mobile');
+  if (window.innerWidth <= 768) {
+    document.body.classList.add('player-open-mobile');
+    app.classList.toggle('player-from-map', fromMap);
+    if (fromMap) {
+      showPage('home');
+      const shortsSection = document.getElementById('shorts-section');
+      if (shortsSection) shortsSection.classList.add('shorts-collapsed');
+    } else {
+      app.classList.add('player-expanded');
+      document.body.classList.add('player-expanded-mobile');
+    }
+  } else {
+    app.classList.remove('player-from-map');
+  }
   player.classList.remove('hidden');
+  const expandBtn = document.getElementById('player-expand-btn');
+  if (expandBtn) expandBtn.textContent = '⛶ 전체 창으로 보기';
   iframe.src = embedUrl;
   titleEl.textContent = short.title;
   viewsEl.textContent = `조회수 ${short.views}`;
@@ -812,6 +777,7 @@ function playShort(short) {
   }
 
   refreshMapSize();
+  if (window.innerWidth <= 768 && fromMap) setTimeout(refreshMapSize, 100);
 }
 
 function closePlayer() {
@@ -819,11 +785,15 @@ function closePlayer() {
   const player = document.getElementById('shorts-player');
   const iframe = document.getElementById('player-iframe');
   const app = document.getElementById('app');
+  const homePage = document.getElementById('home-page');
   if (player && iframe) {
     iframe.src = '';
     player.classList.add('hidden');
-    app.classList.remove('player-open');
-    document.body.classList.remove('player-open-mobile');
+    app.classList.remove('player-open', 'player-expanded', 'player-from-map');
+    document.body.classList.remove('player-open-mobile', 'player-expanded-mobile');
+    if (homePage && player.parentElement === document.body) {
+      homePage.appendChild(player);
+    }
   }
   document.querySelectorAll('.short-card').forEach((el) => el.classList.remove('selected'));
   // 쇼츠 선택 해제 시 전체 마커 다시 표시
@@ -841,28 +811,10 @@ function closePlayer() {
   refreshMapSize();
 }
 
-/** 선택된 위치 기준 반경(도) ~2km */
-const PLACE_FILTER_RADIUS = 0.02;
 let selectedPlaceFilter = null; // { lat, lng, name } | null
 
-/** 위치와 가까운 쇼츠 반환 (거리 ~2km 또는 장소명/제목 매칭) */
-function getShortsNearPlace(lat, lng, name) {
-  const nameLower = (name || '').toLowerCase().trim();
-  if (nameLower.length < 2) return shortsData.filter((s) => getLocationPoints(s).some((p) => Math.sqrt((p.lat - lat) ** 2 + (p.lng - lng) ** 2) <= PLACE_FILTER_RADIUS));
-  return shortsData.filter((s) => {
-    const pts = getLocationPoints(s);
-    const titleMatch = s.title && s.title.toLowerCase().includes(nameLower);
-    for (const p of pts) {
-      const dist = Math.sqrt((p.lat - lat) ** 2 + (p.lng - lng) ** 2);
-      if (dist <= PLACE_FILTER_RADIUS) return true;
-      const locMatch =
-        (p.placeName && p.placeName.toLowerCase().includes(nameLower)) ||
-        (p.place && p.place.toLowerCase().includes(nameLower)) ||
-        (p.locationText && p.locationText.toLowerCase().includes(nameLower));
-      if (locMatch || titleMatch) return true;
-    }
-    return titleMatch && pts.length > 0;
-  });
+function getShortsNearPlaceFilter(lat, lng, name) {
+  return getShortsNearPlace(shortsData, lat, lng, name);
 }
 
 function renderShorts(filter = '', mapCenter = null, placeFilter = null) {
@@ -874,7 +826,7 @@ function renderShorts(filter = '', mapCenter = null, placeFilter = null) {
 
   // 위치/검색 기준 관련 쇼츠 필터링
   if (placeFilter && placeFilter.lat != null && placeFilter.lng != null) {
-    filtered = getShortsNearPlace(placeFilter.lat, placeFilter.lng, placeFilter.name);
+    filtered = getShortsNearPlaceFilter(placeFilter.lat, placeFilter.lng, placeFilter.name);
     if (listHeader) {
       const textEl = listHeader.querySelector('.shorts-list-header-text');
       if (textEl) textEl.textContent = `"${placeFilter.name}" 관련 쇼츠 (${filtered.length}개)`;
@@ -934,6 +886,31 @@ function renderShorts(filter = '', mapCenter = null, placeFilter = null) {
 
 document.getElementById('close-player').addEventListener('click', closePlayer);
 
+const homePage = document.getElementById('home-page');
+document.getElementById('player-expand-btn')?.addEventListener('click', () => {
+  const app = document.getElementById('app');
+  const expandBtn = document.getElementById('player-expand-btn');
+  const player = document.getElementById('shorts-player');
+  if (!app || !expandBtn || !player) return;
+  const willExpand = !app.classList.contains('player-expanded');
+  if (willExpand) {
+    document.body.classList.add('player-expanded-mobile');
+    app.classList.add('player-expanded');
+    if (window.innerWidth <= 768 && homePage) {
+      document.body.appendChild(player);
+    }
+  } else {
+    app.classList.remove('player-expanded');
+    document.body.classList.remove('player-expanded-mobile');
+    if (window.innerWidth <= 768 && homePage) {
+      homePage.appendChild(player);
+    }
+    if (!app.classList.contains('player-from-map')) app.classList.add('player-from-map');
+  }
+  expandBtn.textContent = willExpand ? '⊟ 축소' : '⛶ 전체 창으로 보기';
+  refreshMapSize();
+});
+
 document.getElementById('player-show-map-btn')?.addEventListener('click', () => {
   const short = currentPlayingShort;
   if (!short || getLocationPoints(short).length === 0) return;
@@ -963,7 +940,10 @@ map.on('popupopen', (e) => {
     playBtn.onclick = () => {
       const id = parseInt(playBtn.dataset.id, 10);
       const short = shortsData.find((s) => s.id === id);
-      if (short) playShort(short);
+      if (short) {
+        map.closePopup();
+        playShort(short, true);
+      }
     };
   }
   const relatedBtn = popupEl?.querySelector('.place-card-related-btn');
@@ -1074,76 +1054,17 @@ document.getElementById('shorts-container').addEventListener('click', (e) => {
   if (short) playShort(short);
 });
 
-// 쇼츠 위치 지도 표시 - 구글맵 스타일
+// ========== 쇼츠 위치 지도 마커 ==========
 let shortMarkersLayer = null;
 let shortLocationMarker = null; // 선택된 마커 하이라이트용
 let lastShownShort = null;
-
-function buildDirectionsUrl(data) {
-  const placeName = data.placeName || data.name || '';
-  const addr = data.locationText || (data.placeName && /,|Rd|St|Chome|丁目|区|City|Thailand|Japan/.test(data.placeName) ? data.placeName : null) || data.address || '';
-  const destination = placeName && addr && placeName !== addr ? `${placeName}, ${addr}` : (addr || placeName);
-  if (destination.trim()) {
-    return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}`;
-  }
-  if (data.lat != null && data.lng != null) {
-    return `https://www.google.com/maps/dir/?api=1&destination=${data.lat},${data.lng}`;
-  }
-  return '#';
-}
-
-function buildPlaceCardHtml(short, options = {}) {
-  const placeName = short.placeName || short.place || '';
-  const address = short.locationText || (short.placeName && /,|Rd|St|Chome|丁目|区|City|Thailand|Japan/.test(short.placeName) ? short.placeName : null) || short.address || '';
-  const dirUrl = buildDirectionsUrl(short);
-  const playBtn = options.showPlayBtn !== false && short.youtubeVideoId
-    ? `<button type="button" class="place-card-play-btn" data-id="${short.id}">▶ 영상 보기</button>`
-    : '';
-  const locName = placeName || short.locationText || short.place || '이 장소';
-  const relatedBtn =
-    short.lat != null && short.lng != null
-      ? `<button type="button" class="place-card-related-btn" data-lat="${short.lat}" data-lng="${short.lng}" data-name="${escapeHtml(locName)}">📋 관련 영상보기</button>`
-      : '';
-  const mainTitle = placeName || short.title;
-  const subTitle = placeName ? short.title : '';
-  return `
-    <div class="leaflet-place-card">
-      <div class="place-card-title">${mainTitle}</div>
-      ${subTitle ? `<div class="place-card-subtitle">${subTitle}</div>` : ''}
-      ${address ? `<div class="place-card-address">${address}</div>` : ''}
-      <div class="place-card-actions">
-        ${playBtn}
-        ${relatedBtn}
-        <a href="${dirUrl}" target="_blank" rel="noopener" class="place-card-directions">🚗 길찾기</a>
-      </div>
-    </div>
-  `;
-}
-
-function escapeHtml(str) {
-  if (!str) return '';
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML.replace(/"/g, '&quot;');
-}
-
-/** 쇼츠의 표시할 위치들 반환 - 단일 위치 또는 locations 배열 */
-function getLocationPoints(short) {
-  if (short.locations && Array.isArray(short.locations) && short.locations.length > 0) {
-    return short.locations.map((loc) => ({ ...short, ...loc }));
-  }
-  if (short.lat != null && short.lng != null) {
-    return [{ ...short }];
-  }
-  return [];
-}
 
 function updateLocationInfo(data) {
   const panel = document.getElementById('map-location-info');
   if (!panel) return;
   if (!data) {
     panel.classList.remove('has-content');
-    panel.innerHTML = '<p class="map-location-placeholder">마커를 클릭하거나 장소를 검색하면 해당 위치 정보가 표시됩니다.</p>';
+    panel.innerHTML = '<p class="map-location-placeholder">지도 마커를 클릭하거나 장소를 검색하면 쇼츠 위치 정보가 표시됩니다.</p>';
     return;
   }
   panel.classList.add('has-content');
@@ -1176,7 +1097,7 @@ function updateLocationInfo(data) {
     if (playEl) {
       playEl.onclick = () => {
         const short = shortsData.find((s) => s.id === parseInt(playEl.dataset.id, 10));
-        if (short) playShort(short);
+        if (short) playShort(short, true);
       };
     }
     const relatedEl = panel.querySelector('.location-btn-related');
@@ -1238,7 +1159,8 @@ function renderShortMarkers() {
     });
   });
   shortMarkersLayer.addTo(map);
-  if (allPoints.length > 0) {
+  // 내 위치로 시작했으면 fitBounds로 덮어쓰지 않음
+  if (allPoints.length > 0 && !hasUserLocation) {
     const bounds = L.latLngBounds(allPoints);
     map.fitBounds(bounds, { padding: [50, 50], maxZoom: 12 });
   }
@@ -1299,7 +1221,7 @@ function showShortOnMap(short) {
   refreshMapSize();
 }
 
-// 지도 검색 - 기본 장소 데이터 (지역 + 지도에 표시된 쇼츠 장소)
+// ========== 장소 검색 (지역 + 쇼츠에 표시된 주소) ==========
 const placesDataBase = [
   { name: '서울', lat: 37.5665, lng: 126.978, address: '대한민국 서울특별시' },
   { name: '서울 시청', lat: 37.5665, lng: 126.978, address: '서울특별시 중구 세종대로 110' },
@@ -1380,14 +1302,10 @@ function searchMapPlace(query) {
   if (place) {
     if (placeSearchMarker) map.removeLayer(placeSearchMarker);
     selectedPlaceFilter = { lat: place.lat, lng: place.lng, name: place.name };
-    const dirUrl = buildDirectionsUrl(place);
-    const popupHtml = `
-      <div class="leaflet-place-card">
-        <div class="place-card-title">${place.name}</div>
-        ${place.address ? `<div class="place-card-address">${place.address}</div>` : ''}
-        <a href="${dirUrl}" target="_blank" rel="noopener" class="place-card-directions">🚗 Google Maps 길찾기</a>
-      </div>
-    `;
+    const popupHtml = buildPlaceCardHtml(
+      { ...place, placeName: place.name, place: place.name, title: place.name },
+      { showPlayBtn: false }
+    );
     placeSearchMarker = L.marker([place.lat, place.lng])
       .addTo(map)
       .bindPopup(popupHtml, { className: 'place-card-popup', maxWidth: 280 })
@@ -1603,12 +1521,12 @@ document.getElementById('shorts-search-input').addEventListener('input', (e) => 
     });
   }
 
-  // 초기화
+  // 초기화 - 쇼츠부터 시작
   if (isMobile()) {
-    shortsSection.style.flex = 'none';
-    shortsSection.style.height = '0';
-    setCollapsed(true);
-    if (mapContainer) mapContainer.style.flex = '1 1 0';
+    shortsSection.style.flex = '';
+    shortsSection.style.height = '';
+    setCollapsed(false);
+    if (mapContainer) mapContainer.style.flex = '';
     refreshMapSize();
   }
 

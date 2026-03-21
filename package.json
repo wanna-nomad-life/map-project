@@ -1,5 +1,6 @@
 {
-  "name": "map-1",
+  "name": "shorts-location-map",
+  "description": "YouTube 쇼츠 주소를 지도에 표시하는 앱",
   "private": true,
   "version": "1.0.0",
   "type": "module",

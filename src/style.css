@@ -974,7 +974,6 @@ html, body {
   background: var(--yt-bg-secondary);
   padding: 16px 20px;
   border-radius: var(--yt-radius-lg);
-  border: 1px solid var(--yt-border);
 }
 
 #info-panel h2 {
@@ -1317,7 +1316,7 @@ html, body {
 }
 
 #shorts-player {
-  flex: 0 0 50%;
+  flex: 0 0 35%;
   background: #000;
   position: relative;
   display: flex;
@@ -1328,7 +1327,17 @@ html, body {
 }
 
 #app.player-open #map-container {
-  flex: 0 0 50%;
+  flex: 0 0 65%;
+}
+
+#app.player-open.player-expanded #map-container {
+  flex: 0 0 0;
+  min-width: 0;
+  overflow: hidden;
+}
+
+#app.player-open.player-expanded #shorts-player {
+  flex: 1 1 100%;
 }
 
 #app.player-open #shorts-section {
@@ -1389,6 +1398,13 @@ html, body {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+}
+
+.player-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
 #player-info #player-title {
@@ -1644,18 +1660,44 @@ html, body {
   }
 
   .shorts-list {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
     gap: 12px;
   }
 
   .short-card {
-    padding: 10px;
-    min-height: 48px;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0;
+    min-height: 0;
   }
 
   .short-card .short-thumbnail-wrap {
-    width: 96px;
-    height: 144px;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 9 / 16;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .short-card .short-info {
+    padding: 8px 4px 12px;
+  }
+
+  .short-card .short-title {
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .short-card .short-meta {
+    flex-wrap: wrap;
+  }
+
+  .short-card .short-map-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 1.1rem;
   }
 
   /* 지도 오버레이 - 모바일: 네이버지도 스타일 */
@@ -1665,6 +1707,11 @@ html, body {
     right: 8px;
     max-width: none;
     width: calc(100% - 16px);
+  }
+
+  #info-panel {
+    width: 100%;
+    max-width: 100%;
   }
 
   #info-panel-desktop {
@@ -1679,11 +1726,13 @@ html, body {
     border-radius: 12px;
     padding: 8px 12px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+    width: 100%;
   }
 
   .map-search-bar-mobile .yt-search-wrap {
     flex: 1;
     min-width: 0;
+    width: 100%;
     height: 44px;
     background: #f5f5f5;
     border: none;
@@ -1826,35 +1875,81 @@ html, body {
     height: 280px;
   }
 
-  /* 플레이어 - 모바일 풀스크린 */
-  #app.player-open #map-container {
-    flex: 0 0 0;
-    min-height: 0;
-    display: none;
-  }
-
-  #app.player-open #shorts-section {
+  /* 플레이어 - 모바일 */
+  #app.player-open #shorts-section,
+  #app.player-open #resize-handle {
     display: none !important;
   }
 
-  #shorts-player {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
+  /* 지도에서 영상보기: 지도 65%, 영상 아래 35% */
+  #app.player-open.player-from-map:not(.player-expanded) #home-page {
+    display: flex !important;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
     height: 100%;
-    z-index: 2000;
-    flex: none;
+  }
+
+  #app.player-open.player-from-map:not(.player-expanded) #map-container {
+    flex: 1 1 0 !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    display: flex !important;
+    order: 1;
+  }
+
+  #app.player-open.player-from-map:not(.player-expanded) #shorts-player {
+    flex: 0 0 auto;
+    height: 35vh;
+    min-height: 200px;
+    order: 2;
+    position: relative;
+    z-index: 100;
+    flex-shrink: 0;
+    display: flex !important;
+  }
+
+  #app.player-open.player-from-map:not(.player-expanded) #shorts-player #player-info {
+    bottom: calc(16px + env(safe-area-inset-bottom, 0));
+  }
+
+  /* 쇼츠 목록에서 클릭 or 확장 시: 풀스크린 */
+  #app.player-open.player-expanded #map-container {
+    flex: 0 0 0;
+    min-height: 0;
+    display: none !important;
+  }
+
+  #app.player-open.player-expanded #shorts-player,
+  body.player-expanded-mobile #shorts-player {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    height: 100vh !important;
+    z-index: 9999 !important;
+    flex: none !important;
+  }
+
+  #app.player-open.player-expanded #shorts-player #player-video-wrap,
+  body.player-expanded-mobile #shorts-player #player-video-wrap {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+  }
+
+  #app.player-open.player-expanded #shorts-player #player-info,
+  body.player-expanded-mobile #shorts-player #player-info {
+    bottom: calc(72px + env(safe-area-inset-bottom, 0));
   }
 
   #shorts-player:not(.hidden) {
     display: flex !important;
   }
 
-  /* 플레이어 열림 시 스크롤 방지 */
-  body.player-open-mobile {
+  /* 플레이어 확장 시에만 스크롤 방지 */
+  body.player-expanded-mobile {
     overflow: hidden;
     position: fixed;
     width: 100%;
@@ -1908,8 +2003,10 @@ html, body {
   }
 
   .short-card .short-thumbnail-wrap {
-    width: 80px;
-    height: 120px;
+    /* 모바일: 세로 카드, aspect-ratio 유지 */
+    width: 100%;
+    height: auto;
+    aspect-ratio: 9 / 16;
   }
 
   .subs-channel-avatar {

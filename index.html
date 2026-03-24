@@ -54,35 +54,33 @@
         </button>
       </nav>
       <div id="main-content">
+      <header id="main-header">
+        <h1 id="main-header-title">쇼츠 위치 지도</h1>
+      </header>
       <div id="subscriptions-page" class="page-hidden">
         <div class="subs-header">
-          <h1 class="subs-title">구독</h1>
-          <div class="subs-search-wrap yt-search-wrap">
-            <span class="search-icon">🔍</span>
-            <input type="text" id="subs-search-input" placeholder="채널·쇼츠 검색..." autocomplete="off" />
+          <div class="subs-header-row">
+            <h1 class="subs-title">구독</h1>
+            <div class="subs-search-wrap yt-search-wrap yt-search-bar">
+              <span class="search-icon" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+              </span>
+              <input type="text" id="subs-search-input" placeholder="채널·쇼츠 검색" autocomplete="off" />
+            </div>
           </div>
-          <div class="subs-chips">
-            <button type="button" class="subs-chip active">전체</button>
-            <button type="button" class="subs-chip">오늘</button>
-            <button type="button" class="subs-chip">이번 주</button>
-            <button type="button" class="subs-chip">이번 달</button>
+          <div class="subs-chips-scroll">
+            <div class="subs-chips">
+              <button type="button" class="subs-chip active">전체</button>
+              <button type="button" class="subs-chip">오늘</button>
+              <button type="button" class="subs-chip">이번 주</button>
+              <button type="button" class="subs-chip">이번 달</button>
+            </div>
           </div>
         </div>
         <div class="subs-slider-wrap">
           <button type="button" class="subs-slider-btn subs-slider-prev" aria-label="이전">‹</button>
           <div class="subs-channels" id="subs-channels"></div>
           <button type="button" class="subs-slider-btn subs-slider-next" aria-label="다음">›</button>
-        </div>
-        <div id="update-channel-overlay" class="modal-overlay hidden">
-          <div class="modal-content modal-content-compact">
-            <div class="shorts-collecting-wrap">
-              <span class="shorts-collecting-text">업데이트 중</span>
-              <div class="shorts-collecting-progress-wrap">
-                <div class="shorts-collecting-progress-bar" id="update-progress-bar" style="width: 0%"></div>
-              </div>
-              <span class="shorts-collecting-percent" id="update-progress-percent">0%</span>
-            </div>
-          </div>
         </div>
         <div id="add-channel-modal" class="modal-overlay hidden">
           <div class="modal-content">
@@ -92,7 +90,12 @@
               <input type="text" id="add-url-input" class="modal-input" placeholder="YouTube URL 붙여넣기 (채널 또는 쇼츠)" autocomplete="off" />
               <button type="button" id="add-url-btn" class="modal-btn modal-btn-confirm">추가</button>
             </div>
-            <input type="text" id="add-channel-input" class="modal-input" placeholder="채널명 검색..." autocomplete="off" />
+            <div class="add-channel-search-wrap yt-search-wrap yt-search-bar">
+              <span class="search-icon" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+              </span>
+              <input type="text" id="add-channel-input" class="modal-input" placeholder="채널명 검색" autocomplete="off" />
+            </div>
             <div id="add-channel-results" class="channel-search-results"></div>
             <div class="modal-actions">
               <button type="button" class="modal-btn modal-btn-cancel">취소</button>
@@ -103,19 +106,40 @@
           <div class="subs-shorts-grid" id="subs-shorts-grid"></div>
         </div>
       </div>
+      <div id="shorts-page" class="page-hidden">
+        <div class="shorts-page-header">
+          <h1 class="shorts-page-title">인기 쇼츠</h1>
+          <p class="shorts-page-desc">위치별 조회수·인기도 순 (한 달 기준)</p>
+        </div>
+        <div class="shorts-page-chips">
+          <button type="button" class="shorts-scope-chip active" data-scope="world">전 세계</button>
+          <button type="button" class="shorts-scope-chip" data-scope="country">국가별</button>
+          <button type="button" class="shorts-scope-chip" data-scope="city">시·도별</button>
+        </div>
+        <div id="shorts-rank-country-wrap" class="shorts-rank-select-wrap hidden">
+          <label>국가</label>
+          <select id="shorts-rank-country" class="shorts-rank-select"></select>
+        </div>
+        <div id="shorts-rank-city-wrap" class="shorts-rank-select-wrap hidden">
+          <label>시·도</label>
+          <select id="shorts-rank-city" class="shorts-rank-select"></select>
+        </div>
+        <div class="shorts-rank-grid" id="shorts-rank-grid"></div>
+      </div>
       <div id="home-page">
       <div id="map-container">
         <button id="home-btn" type="button" title="홈">
-          <span class="home-icon">🏠</span>
-          <span class="home-text">쇼츠 위치 지도</span>
+          <span class="home-icon">🗺️</span>
         </button>
         <div id="map-overlay">
           <div id="info-panel">
             <div id="map-search-bar-mobile" class="map-search-bar-mobile">
-              <div id="map-search-wrap" class="yt-search-wrap">
-                <span class="search-icon">🔍</span>
-                <input type="text" id="map-search-input" placeholder="쇼츠 위치·장소 검색" autocomplete="off" />
-              </div>
+            <div id="map-search-wrap" class="yt-search-wrap yt-search-bar">
+              <span class="search-icon" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+              </span>
+              <input type="text" id="map-search-input" placeholder="쇼츠 위치·장소 검색" autocomplete="off" />
+            </div>
               <button id="gps-btn" type="button" class="gps-btn-circle" title="내 위치" aria-label="내 위치">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
               </button>
@@ -125,19 +149,7 @@
               <button type="button" class="map-chip">장소</button>
               <button type="button" class="map-chip">내 위치</button>
             </div>
-            <div id="info-panel-desktop">
-              <h2>쇼츠 위치 지도</h2>
-              <p>쇼츠에 표시된 장소를 지도에서 확인하세요. 마커를 클릭하면 영상·주소 정보를 볼 수 있습니다.</p>
-              <div id="map-actions">
-                <button type="button" class="gps-btn-desktop" id="gps-btn-desktop">📍 내 위치</button>
-                <div id="map-search-wrap-desktop" class="yt-search-wrap">
-                  <span class="search-icon">🔍</span>
-                  <input type="text" id="map-search-input-desktop" placeholder="장소 검색..." autocomplete="off" />
-                </div>
-              </div>
-              <p id="gps-status"></p>
-              <a href="/admin.html" class="admin-link" title="위치 추천 확인">📍 위치 관리</a>
-            </div>
+            <p id="gps-status" class="gps-status-text"></p>
           </div>
         </div>
         <div id="map"></div>
@@ -149,9 +161,11 @@
         <span class="resize-handle-icon">⋮⋮</span>
       </div>
       <div id="shorts-section">
-        <div id="shorts-search-wrap" class="yt-search-wrap">
-          <span class="search-icon">🔍</span>
-          <input type="text" id="shorts-search-input" placeholder="쇼츠 검색..." autocomplete="off" />
+        <div id="shorts-search-wrap" class="yt-search-wrap yt-search-bar">
+          <span class="search-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+          </span>
+          <input type="text" id="shorts-search-input" placeholder="쇼츠 검색" autocomplete="off" />
         </div>
         <div id="shorts-container">
           <div id="shorts-list-header" class="shorts-list-header" style="display: none;">
@@ -170,8 +184,8 @@
           <div class="player-title-row">
             <span id="player-title"></span>
             <div class="player-buttons">
-              <button id="player-expand-btn" type="button" class="player-map-btn" title="전체 창으로 보기">⛶ 전체 창으로 보기</button>
-              <button id="player-show-map-btn" type="button" class="player-map-btn" title="지도에서 위치 보기">🗺️ 지도에서 위치 보기</button>
+              <button id="player-expand-btn" type="button" class="player-map-btn" title="전체 창으로 보기">⛶</button>
+              <button id="player-show-map-btn" type="button" class="player-map-btn" title="지도에서 위치 보기"><svg class="player-map-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></button>
             </div>
           </div>
           <span id="player-views"></span>
@@ -180,6 +194,13 @@
       </div>
       </div>
       </div>
+    </div>
+    <div id="update-channel-overlay" class="update-progress-bar hidden">
+      <span class="update-progress-label">업데이트 중</span>
+      <div class="update-progress-track">
+        <div class="update-progress-fill" id="update-progress-bar" style="width: 0%"></div>
+      </div>
+      <span class="update-progress-percent" id="update-progress-percent">0%</span>
     </div>
     <script type="module" src="/src/main.js"></script>
   </body>

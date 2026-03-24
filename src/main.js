@@ -7,6 +7,14 @@ import 'leaflet.markercluster';
 import { buildPlaceCardHtml, buildDirectionsUrl, escapeHtml } from './lib/place-card.js';
 import { parseSSEStream } from './lib/sse.js';
 import { getLocationPoints, getShortsNearPlace } from './modules/shorts-location.js';
+import {
+  getRankedShorts,
+  getUniqueCountries,
+  getUniqueCities,
+  parseLocationCountryCity,
+  parseViewsToNumber,
+  reverseGeocodeToSiGunGu,
+} from './modules/shorts-ranking.js';
 
 // ========== 지도 초기화 ==========
 // Leaflet 기본 아이콘 경로 수정 (Webpack/Vite 번들링 시 필요)
@@ -146,14 +154,25 @@ document.getElementById('nav-menu-btn').addEventListener('click', () => {
 
 function showPage(page) {
   const subsPage = document.getElementById('subscriptions-page');
+  const shortsPage = document.getElementById('shorts-page');
   const homePage = document.getElementById('home-page');
+  const headerTitle = document.getElementById('main-header-title');
+
+  subsPage.classList.add('page-hidden');
+  shortsPage.classList.add('page-hidden');
+  homePage.classList.add('page-hidden');
+
   if (page === 'subscriptions') {
     subsPage.classList.remove('page-hidden');
-    homePage.classList.add('page-hidden');
+    if (headerTitle) headerTitle.textContent = '구독';
     setTimeout(updateSubsSliderButtons, 50);
+  } else if (page === 'shorts') {
+    shortsPage.classList.remove('page-hidden');
+    if (headerTitle) headerTitle.textContent = '인기 쇼츠';
+    renderShortsRank();
   } else {
-    subsPage.classList.add('page-hidden');
     homePage.classList.remove('page-hidden');
+    if (headerTitle) headerTitle.textContent = '쇼츠 위치 지도';
     if (page === 'home') refreshMapSize();
   }
 }
@@ -166,7 +185,7 @@ document.getElementById('nav-home').addEventListener('click', () => {
 
 document.getElementById('nav-shorts').addEventListener('click', () => {
   closePlayer();
-  showPage('home');
+  showPage('shorts');
   setNavActive('nav-shorts');
 });
 
@@ -219,6 +238,13 @@ async function loadShortsDatabase() {
 }
 
 let selectedSubsChannelId = null;
+/** 채널 위 진행 표시: { id, label, percent } */
+let channelProgress = null;
+/** 추가 중인 채널 (API 완료 전 임시 표시) */
+let pendingChannels = [];
+/** 채널 수집/업데이트 요청 큐 (선입선출) */
+let channelOpQueue = [];
+let channelOpRunning = false;
 
 function getSubscribedShorts(channelId = null, searchQuery = '') {
   let list = shortsData.filter((s) => s.channelId && subscribedChannelIds.has(s.channelId));
@@ -247,13 +273,17 @@ function renderSubsShorts(channelId = null) {
         (short) => {
           const vid = short.youtubeVideoId || '';
           const thumbUrl = vid ? `https://img.youtube.com/vi/${vid}/hqdefault.jpg` : '';
+          const hasLoc = getLocationPoints(short).length > 0;
           return `
       <div class="short-card subs-short-card" data-id="${short.id}">
         <div class="short-thumbnail-wrap">
           ${thumbUrl ? `<img class="short-thumbnail" src="${thumbUrl}" alt="" loading="lazy">` : `<div class="short-placeholder" style="background: ${short.color}">▶</div>`}
         </div>
         <div class="short-info">
-          <div class="short-title">${short.title}</div>
+          <div class="short-meta">
+            <div class="short-title">${short.title}</div>
+            ${hasLoc ? `<button class="short-map-btn" data-id="${short.id}" type="button" title="지도에서 위치 보기"><svg class="short-map-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></button>` : ''}
+          </div>
           <div class="short-views">조회수 ${short.views}</div>
         </div>
       </div>
@@ -268,27 +298,44 @@ function renderSubscriptions() {
   if (!channelsEl) return;
 
   const searchQuery = (document.getElementById('subs-search-input')?.value ?? '').trim().toLowerCase();
-  const channelsToShow = searchQuery
+  let channelsToShow = searchQuery
     ? subscriptionsData.filter((ch) => (ch.name || '').toLowerCase().includes(searchQuery))
-    : subscriptionsData;
+    : [...subscriptionsData];
+  channelsToShow = [...channelsToShow, ...pendingChannels];
 
   const channelCards = channelsToShow
     .map(
-      (ch) => `
-    <div class="subs-channel-card-wrap ${selectedSubsChannelId === ch.id ? 'selected' : ''}" data-id="${ch.id}">
-      <button type="button" class="subs-channel-settings-btn" title="설정" aria-label="설정">⋮</button>
+      (ch) => {
+        const isPending = ch._pending;
+        const prog = channelProgress && String(channelProgress.id) === String(ch.id) ? channelProgress : null;
+        const showMenu = !isPending;
+        return `
+    <div class="subs-channel-card-wrap ${selectedSubsChannelId === ch.id ? 'selected' : ''} ${prog ? 'has-progress' : ''}" data-id="${ch.id}">
+      ${prog ? `
+      <div class="subs-channel-progress">
+        <span class="subs-channel-progress-label">${prog.label}</span>
+        <div class="subs-channel-progress-track">
+          <div class="subs-channel-progress-fill" style="width: ${prog.percent}%"></div>
+        </div>
+        <span class="subs-channel-progress-percent">${prog.percent}%</span>
+      </div>
+      ` : ''}
+      ${showMenu ? `<button type="button" class="subs-channel-settings-btn" title="설정" aria-label="설정">⋮</button>` : ''}
       <a href="#" class="subs-channel-card">
         <div class="subs-channel-avatar" style="background: ${ch.color}">${ch.initial}</div>
         <span class="subs-channel-name">${ch.name}</span>
-        <span class="subs-channel-subs">구독자 ${ch.subs}</span>
+        <span class="subs-channel-subs">${isPending ? '추가 중' : '구독자 ' + (ch.subs || '')}</span>
       </a>
+      ${showMenu ? `
       <div class="subs-channel-menu hidden">
         <button type="button" class="subs-channel-menu-item" data-action="report">신고</button>
         <button type="button" class="subs-channel-menu-item" data-action="update">업데이트</button>
         <button type="button" class="subs-channel-menu-item" data-action="delete">삭제</button>
       </div>
+      ` : ''}
     </div>
-  `
+  `;
+      }
     )
     .join('');
 
@@ -350,6 +397,133 @@ document.getElementById('subs-search-input')?.addEventListener('input', () => {
   renderSubscriptions();
 });
 
+// ========== Shorts 랭킹 페이지 (전 세계/국가/도시) ==========
+let shortsRankScope = 'world';
+let shortsRankCountry = '';
+let shortsRankCity = '';
+const cityResolvedCache = new Map();
+
+function renderShortsRank() {
+  const grid = document.getElementById('shorts-rank-grid');
+  const countryWrap = document.getElementById('shorts-rank-country-wrap');
+  const cityWrap = document.getElementById('shorts-rank-city-wrap');
+  const countrySelect = document.getElementById('shorts-rank-country');
+  const citySelect = document.getElementById('shorts-rank-city');
+
+  if (!grid) return;
+
+  countryWrap?.classList.toggle('hidden', shortsRankScope !== 'country' && shortsRankScope !== 'city');
+  cityWrap?.classList.toggle('hidden', shortsRankScope !== 'city');
+
+  if (shortsRankScope === 'country' || shortsRankScope === 'city') {
+    const countries = getUniqueCountries(shortsData, cityResolvedCache);
+    if (countrySelect) {
+      countrySelect.innerHTML = '<option value="">전체</option>' + countries.map((c) => `<option value="${c}">${c}</option>`).join('');
+      countrySelect.value = shortsRankCountry || (countries[0] || '');
+      shortsRankCountry = countrySelect.value;
+    }
+  }
+
+  if (shortsRankScope === 'city') {
+    const cities = getUniqueCities(shortsData, shortsRankCountry, cityResolvedCache);
+    if (citySelect) {
+      citySelect.innerHTML = '<option value="">전체</option>' + cities.map((c) => `<option value="${c}">${c}</option>`).join('');
+      citySelect.value = shortsRankCity || (cities[0] || '');
+      shortsRankCity = citySelect.value;
+    }
+  }
+
+  const ranked = getRankedShorts(
+    shortsData,
+    shortsRankScope,
+    shortsRankScope !== 'world' ? shortsRankCountry : null,
+    shortsRankScope === 'city' ? shortsRankCity : null,
+    cityResolvedCache
+  );
+
+  grid.innerHTML = ranked
+    .map(
+      (short, idx) => {
+        const vid = short.youtubeVideoId || '';
+        const thumbUrl = vid ? `https://img.youtube.com/vi/${vid}/hqdefault.jpg` : '';
+        const { country, city } = parseLocationCountryCity(short, cityResolvedCache);
+        const cityDisplay = city || '미확인';
+        const views = parseViewsToNumber(short.views);
+        const viewsStr = views > 0 ? (views >= 10000 ? `${(views / 10000).toFixed(1)}만` : views.toLocaleString()) : short.views || '0';
+        return `
+    <div class="shorts-rank-card" data-id="${short.id}">
+      <div class="short-thumbnail-wrap">
+        ${thumbUrl ? `<img class="short-thumbnail" src="${thumbUrl}" alt="" loading="lazy">` : `<div class="short-placeholder" style="background: ${short.color}">▶</div>`}
+      </div>
+      <div class="short-info">
+        <span class="short-rank-badge">#${idx + 1}</span>
+        <div class="short-title">${short.title || '(제목 없음)'}</div>
+        <div class="short-meta-row">${country} · ${cityDisplay} · 조회수 ${viewsStr}</div>
+      </div>
+    </div>
+  `;
+      }
+    )
+    .join('');
+
+  grid.querySelectorAll('.shorts-rank-card').forEach((card) => {
+    card.addEventListener('click', () => {
+      const id = parseInt(card.dataset.id, 10);
+      const short = shortsData.find((s) => s.id === id);
+      if (short) {
+        showPage('home');
+        playShort(short, false);
+      }
+    });
+  });
+
+  enqueueGeocodeShortsWithoutCity();
+}
+
+async function enqueueGeocodeShortsWithoutCity() {
+  const toGeocode = [];
+  shortsData.forEach((s) => {
+    const pts = getLocationPoints(s);
+    if (pts.length === 0) return;
+    const pt = pts[0];
+    if (pt.lat == null || pt.lng == null) return;
+    const key = `${Number(pt.lat).toFixed(5)},${Number(pt.lng).toFixed(5)}`;
+    if (cityResolvedCache.has(key)) return;
+    const { city } = parseLocationCountryCity(s, cityResolvedCache);
+    if (!city) toGeocode.push({ lat: pt.lat, lng: pt.lng });
+  });
+
+  for (const { lat, lng } of toGeocode) {
+    const result = await reverseGeocodeToSiGunGu(lat, lng);
+    const key = `${Number(lat).toFixed(5)},${Number(lng).toFixed(5)}`;
+    cityResolvedCache.set(key, result);
+    await new Promise((r) => setTimeout(r, 1100));
+  }
+  if (toGeocode.length > 0) renderShortsRank();
+}
+
+document.querySelectorAll('.shorts-scope-chip').forEach((chip) => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.shorts-scope-chip').forEach((c) => c.classList.remove('active'));
+    chip.classList.add('active');
+    shortsRankScope = chip.dataset.scope || 'world';
+    shortsRankCountry = '';
+    shortsRankCity = '';
+    renderShortsRank();
+  });
+});
+
+document.getElementById('shorts-rank-country')?.addEventListener('change', (e) => {
+  shortsRankCountry = e.target.value || '';
+  shortsRankCity = '';
+  renderShortsRank();
+});
+
+document.getElementById('shorts-rank-city')?.addEventListener('change', (e) => {
+  shortsRankCity = e.target.value || '';
+  renderShortsRank();
+});
+
 // 채널 추가 모달
 let channelSearchDebounce = null;
 
@@ -373,31 +547,14 @@ function isYouTubeUrl(text) {
 }
 
 async function addFromUrl(url) {
-  const results = document.getElementById('add-channel-results');
   const urlInput = document.getElementById('add-url-input');
   if (!url || !isYouTubeUrl(url)) {
     alert('유효한 YouTube URL을 입력해 주세요. (채널 또는 쇼츠)');
     return;
   }
 
-  if (results) {
-    results.innerHTML = `
-      <div class="shorts-collecting-wrap">
-        <span class="shorts-collecting-text">가져오는 중</span>
-        <div class="shorts-collecting-progress-wrap">
-          <div class="shorts-collecting-progress-bar" style="width: 0%"></div>
-        </div>
-        <span class="shorts-collecting-percent">0%</span>
-      </div>
-    `;
-  }
-
-  const updateProgress = (percent) => {
-    const bar = results?.querySelector('.shorts-collecting-progress-bar');
-    const pctEl = results?.querySelector('.shorts-collecting-percent');
-    if (bar) bar.style.width = `${percent}%`;
-    if (pctEl) pctEl.textContent = `${percent}%`;
-  };
+  closeAddChannelModal();
+  const progress = showBottomProgress('가져오는 중');
 
   try {
     const res = await fetch('/api/add-from-url', {
@@ -408,42 +565,40 @@ async function addFromUrl(url) {
     const contentType = res.headers.get('Content-Type') || '';
 
     if (contentType.includes('text/event-stream') && res.body) {
-      const ev = await parseSSEStream(res.body, updateProgress);
+      const ev = await parseSSEStream(res.body, progress.update);
       const data = ev?.result;
       if (!data?.ok) throw new Error(data?.error || '채널 추가 실패');
-      updateProgress(100);
+      progress.update(100);
       await loadShortsDatabase();
       renderShortMarkers();
       updateShortsByMap();
       renderSubscriptions();
-      closeAddChannelModal();
+      progress.hide();
       const n = data.shortsAdded ?? 0;
       alert(`채널 추가 완료. 주소 정보가 있는 쇼츠 ${n}개가 추가되었습니다.`);
     } else {
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data?.error || '요청 실패');
       if (!data.ok) {
+        progress.hide();
         if (data.alreadyExists) {
           alert('이미 추가된 영상입니다.');
         } else {
           throw new Error(data.error || '추가 실패');
         }
         if (urlInput) urlInput.value = '';
-        if (results) results.innerHTML = '';
         return;
       }
-      updateProgress(100);
+      progress.update(100);
       await loadShortsDatabase();
       renderShortMarkers();
       updateShortsByMap();
       renderSubscriptions();
-      closeAddChannelModal();
+      progress.hide();
       alert(`쇼츠 "${data.short?.title || ''}" 추가 완료.`);
     }
   } catch (err) {
-    if (results) {
-      results.innerHTML = `<p class="channel-search-empty">오류: ${(err.message || '추가 실패').replace(/</g, '&lt;')}</p>`;
-    }
+    progress.hide();
     alert(err.message || '추가 중 오류가 발생했습니다.');
   }
 }
@@ -451,6 +606,39 @@ async function addFromUrl(url) {
 function closeAddChannelModal() {
   const modal = document.getElementById('add-channel-modal');
   if (modal) modal.classList.add('hidden');
+}
+
+/** 채널 카드 위 진행 업데이트 (DOM 직접 수정) */
+function updateChannelProgressOnCard(id, percent) {
+  channelProgress = channelProgress && String(channelProgress.id) === String(id) ? { ...channelProgress, percent } : channelProgress;
+  const wrap = document.querySelector(`.subs-channel-card-wrap[data-id="${id}"]`);
+  if (!wrap) return;
+  const fill = wrap.querySelector('.subs-channel-progress-fill');
+  const pctEl = wrap.querySelector('.subs-channel-progress-percent');
+  if (fill) fill.style.width = `${percent}%`;
+  if (pctEl) pctEl.textContent = `${percent}%`;
+}
+
+/** 하단 진행 바 (addFromUrl 등 채널 카드 없을 때) */
+function showBottomProgress(label) {
+  const overlay = document.getElementById('update-channel-overlay');
+  const bar = document.getElementById('update-progress-bar');
+  const pctEl = document.getElementById('update-progress-percent');
+  const labelEl = overlay?.querySelector('.update-progress-label');
+  if (labelEl) labelEl.textContent = label || '진행 중';
+  if (bar) bar.style.width = '0%';
+  if (pctEl) pctEl.textContent = '0%';
+  if (overlay) overlay.classList.remove('hidden');
+  return {
+    update: (percent) => {
+      if (bar) bar.style.width = `${percent}%`;
+      if (pctEl) pctEl.textContent = `${percent}%`;
+    },
+    hide: () => {
+      if (overlay) overlay.classList.add('hidden');
+      if (labelEl) labelEl.textContent = '업데이트 중';
+    },
+  };
 }
 
 async function searchChannelsFromApi(query) {
@@ -490,7 +678,7 @@ function renderChannelSearchResults(channels) {
   });
 }
 
-async function selectChannelFromSearch(name, url) {
+function selectChannelFromSearch(name, url) {
   const existing = subscriptionsData.find(
     (c) => c.name?.toLowerCase() === name?.toLowerCase() || (c.url && c.url.includes(name))
   );
@@ -498,26 +686,48 @@ async function selectChannelFromSearch(name, url) {
     alert(`"${name}" 채널은 이미 추가되어 있습니다.`);
     return;
   }
+  closeAddChannelModal();
+  channelOpQueue.push({ type: 'add', name, url });
+  processChannelOpQueue();
+}
 
-  const results = document.getElementById('add-channel-results');
-  if (results) {
-    results.innerHTML = `
-      <div class="shorts-collecting-wrap">
-        <span class="shorts-collecting-text">수집 중</span>
-        <div class="shorts-collecting-progress-wrap">
-          <div class="shorts-collecting-progress-bar" style="width: 0%"></div>
-        </div>
-        <span class="shorts-collecting-percent">0%</span>
-      </div>
-    `;
+function updateChannelShorts(channelId, channelName) {
+  channelOpQueue.push({ type: 'update', channelId, channelName });
+  processChannelOpQueue();
+}
+
+async function processChannelOpQueue() {
+  if (channelOpRunning || channelOpQueue.length === 0) return;
+  channelOpRunning = true;
+  const op = channelOpQueue.shift();
+  try {
+    if (op.type === 'add') {
+      await executeAddChannel(op.name, op.url);
+    } else if (op.type === 'update') {
+      await executeUpdateChannel(op.channelId, op.channelName);
+    }
+  } finally {
+    channelOpRunning = false;
+    if (channelOpQueue.length > 0) processChannelOpQueue();
   }
+}
 
-  const updateProgress = (percent) => {
-    const bar = results?.querySelector('.shorts-collecting-progress-bar');
-    const pctEl = results?.querySelector('.shorts-collecting-percent');
-    if (bar) bar.style.width = `${percent}%`;
-    if (pctEl) pctEl.textContent = `${percent}%`;
-  };
+async function executeAddChannel(name, url) {
+  const pendingId = 'pending-' + Date.now();
+  const initial = (name || '?').charAt(0);
+  const colors = ['#e53935', '#2196F3', '#4CAF50', '#FF9800', '#9C27B0', '#00BCD4'];
+  const color = colors[pendingChannels.length % colors.length];
+  pendingChannels.push({
+    id: pendingId,
+    name: name || '채널',
+    url,
+    initial,
+    color,
+    _pending: true,
+  });
+  channelProgress = { id: pendingId, label: '수집 중', percent: 0 };
+  renderSubscriptions();
+  showPage('subscriptions');
 
   try {
     const res = await fetch('/api/add-channel-with-shorts', {
@@ -541,8 +751,10 @@ async function selectChannelFromSearch(name, url) {
           if (line.startsWith('data: ')) {
             try {
               const ev = JSON.parse(line.slice(6));
-              if (ev.type === 'progress') updateProgress(ev.percent ?? 0);
-              else if (ev.type === 'done') data = ev.result;
+              if (ev.type === 'progress') {
+                channelProgress = { ...channelProgress, percent: ev.percent ?? 0 };
+                updateChannelProgressOnCard(pendingId, ev.percent ?? 0);
+              } else if (ev.type === 'done') data = ev.result;
               else if (ev.type === 'error') throw new Error(ev.error);
             } catch (e) {
               if (e instanceof SyntaxError) continue;
@@ -565,37 +777,30 @@ async function selectChannelFromSearch(name, url) {
     }
     if (!res.ok) throw new Error(data?.error || '요청 실패');
 
-    if (!data.ok) {
-      throw new Error(data.error || '채널 추가 실패');
+    if (!data?.ok) {
+      throw new Error(data?.error || '채널 추가 실패');
     }
 
-    updateProgress(100);
+    updateChannelProgressOnCard(pendingId, 100);
+    pendingChannels = pendingChannels.filter((p) => p.id !== pendingId);
+    channelProgress = null;
     await loadShortsDatabase();
     renderShortMarkers();
     updateShortsByMap();
     renderSubscriptions();
-    closeAddChannelModal();
     const n = data.shortsAdded ?? 0;
     alert(`채널 "${name}" 추가 완료. 주소 정보가 있는 쇼츠 ${n}개가 추가되었습니다.`);
   } catch (err) {
-    if (results) {
-      results.innerHTML = `<p class="channel-search-empty">오류: ${(err.message || '채널 추가 실패').replace(/</g, '&lt;')}. 검색창에서 다시 검색해 보세요.</p>`;
-    }
+    pendingChannels = pendingChannels.filter((p) => p.id !== pendingId);
+    channelProgress = null;
+    renderSubscriptions();
     alert(err.message || '채널 추가 중 오류가 발생했습니다.');
   }
 }
 
-async function updateChannelShorts(channelId, channelName) {
-  const overlay = document.getElementById('update-channel-overlay');
-  const bar = document.getElementById('update-progress-bar');
-  const pctEl = document.getElementById('update-progress-percent');
-  const updateProgress = (percent) => {
-    if (bar) bar.style.width = `${percent}%`;
-    if (pctEl) pctEl.textContent = `${percent}%`;
-  };
-
-  if (overlay) overlay.classList.remove('hidden');
-  updateProgress(0);
+async function executeUpdateChannel(channelId, channelName) {
+  channelProgress = { id: channelId, label: '업데이트 중', percent: 0 };
+  renderSubscriptions();
 
   try {
     const res = await fetch('/api/update-channel-shorts', {
@@ -603,16 +808,23 @@ async function updateChannelShorts(channelId, channelName) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ channelId }),
     });
+    if (!res.ok && res.status === 404) {
+      throw new Error('API_NOT_AVAILABLE');
+    }
     let data = null;
     const contentType = res.headers.get('Content-Type') || '';
     if (contentType.includes('text/event-stream') && res.body) {
-      const ev = await parseSSEStream(res.body, updateProgress);
+      const ev = await parseSSEStream(res.body, (p) => {
+        channelProgress = { id: channelId, label: '업데이트 중', percent: p };
+        updateChannelProgressOnCard(channelId, p);
+      });
       data = ev?.result;
     } else {
       data = await res.json().catch(() => ({}));
     }
     if (!data?.ok) throw new Error(data?.error || '업데이트 실패');
-    updateProgress(100);
+    updateChannelProgressOnCard(channelId, 100);
+    channelProgress = null;
     await loadShortsDatabase();
     renderShortMarkers();
     updateShortsByMap();
@@ -620,9 +832,12 @@ async function updateChannelShorts(channelId, channelName) {
     const n = data.shortsAdded ?? 0;
     alert(`"${channelName}" 채널 업데이트 완료. 새 쇼츠 ${n}개가 추가되었습니다.`);
   } catch (err) {
-    alert(err.message || '채널 업데이트에 실패했습니다.');
+    const msg = err.message || '채널 업데이트에 실패했습니다.';
+    const needServer = msg === 'API_NOT_AVAILABLE' || msg === 'Failed to fetch' || (err.name === 'TypeError' && String(err).includes('fetch'));
+    alert(needServer ? '업데이트 API를 사용할 수 없습니다. npm run dev 또는 npm run preview로 실행해 주세요.' : msg);
   } finally {
-    if (overlay) overlay.classList.add('hidden');
+    channelProgress = null;
+    renderSubscriptions();
   }
 }
 
@@ -747,7 +962,7 @@ function playShort(short, fromMap = false) {
   }
   player.classList.remove('hidden');
   const expandBtn = document.getElementById('player-expand-btn');
-  if (expandBtn) expandBtn.textContent = '⛶ 전체 창으로 보기';
+  if (expandBtn) expandBtn.textContent = '⛶';
   iframe.src = embedUrl;
   titleEl.textContent = short.title;
   viewsEl.textContent = `조회수 ${short.views}`;
@@ -812,9 +1027,43 @@ function closePlayer() {
 }
 
 let selectedPlaceFilter = null; // { lat, lng, name } | null
+let selectedBoundsFilter = false; // true: 지도 범위 내 장소만 표시
 
 function getShortsNearPlaceFilter(lat, lng, name) {
   return getShortsNearPlace(shortsData, lat, lng, name);
+}
+
+/** selectedBoundsFilter용 bounds 반환 (지도 컨테이너 상태에 따라 fallback 포함) */
+function getBoundsForFilter() {
+  refreshMapSize();
+  const container = map.getContainer();
+  if (container && container.offsetParent !== null && container.offsetWidth > 0 && container.offsetHeight > 0) {
+    let b = map.getBounds();
+    if (b && typeof b.isValid === 'function' && b.isValid()) return b.pad(0.2);
+  }
+  const center = map.getCenter();
+  const zoom = map.getZoom();
+  const span = 0.02 * Math.pow(2, 13 - Math.min(zoom, 18));
+  return L.latLngBounds(
+    [center.lat - span, center.lng - span],
+    [center.lat + span, center.lng + span]
+  );
+}
+
+function getShortsInBounds(bounds) {
+  if (!bounds || typeof bounds.contains !== 'function') return shortsData;
+  if (typeof bounds.isValid === 'function' && !bounds.isValid()) return shortsData;
+  return shortsData.filter((s) => {
+    const pts = getLocationPoints(s);
+    return pts.some((p) => bounds.contains([p.lat, p.lng]));
+  });
+}
+
+function clearPlaceAndBoundsFilter() {
+  selectedPlaceFilter = null;
+  selectedBoundsFilter = false;
+  renderShortMarkers();
+  updateShortsByMap();
 }
 
 function renderShorts(filter = '', mapCenter = null, placeFilter = null) {
@@ -832,11 +1081,17 @@ function renderShorts(filter = '', mapCenter = null, placeFilter = null) {
       if (textEl) textEl.textContent = `"${placeFilter.name}" 관련 쇼츠 (${filtered.length}개)`;
       listHeader.style.display = 'flex';
       const clearBtn = listHeader.querySelector('.place-filter-clear');
-      if (clearBtn) clearBtn.onclick = () => {
-        selectedPlaceFilter = null;
-        listHeader.style.display = 'none';
-        updateShortsByMap();
-      };
+      if (clearBtn) clearBtn.onclick = clearPlaceAndBoundsFilter;
+    }
+  } else if (selectedBoundsFilter) {
+    const bounds = getBoundsForFilter();
+    filtered = getShortsInBounds(bounds);
+    if (listHeader) {
+      const textEl = listHeader.querySelector('.shorts-list-header-text');
+      if (textEl) textEl.textContent = `현재 지도 범위 내 장소 (${filtered.length}개)`;
+      listHeader.style.display = 'flex';
+      const clearBtn = listHeader.querySelector('.place-filter-clear');
+      if (clearBtn) clearBtn.onclick = clearPlaceAndBoundsFilter;
     }
   } else if (listHeader) {
     listHeader.style.display = 'none';
@@ -847,8 +1102,8 @@ function renderShorts(filter = '', mapCenter = null, placeFilter = null) {
     filtered = filtered.filter((s) => s.title.toLowerCase().includes(query));
   }
 
-  // 지도 중심 기준으로 해당 지역 쇼츠만 필터링 (위치 필터 없을 때만)
-  if (!placeFilter && mapCenter && filtered.length > 0) {
+  // 지도 중심 기준으로 해당 지역 쇼츠만 필터링 (위치/범위 필터 없을 때만)
+  if (!placeFilter && !selectedBoundsFilter && mapCenter && filtered.length > 0) {
     const bounds = map.getBounds();
     const inBounds = filtered.filter((s) => {
       const pts = getLocationPoints(s);
@@ -873,7 +1128,7 @@ function renderShorts(filter = '', mapCenter = null, placeFilter = null) {
       <div class="short-info">
         <div class="short-meta">
           <div class="short-title">${short.title}</div>
-          <button class="short-map-btn" data-id="${short.id}" type="button" title="지도에서 위치 보기">🗺️</button>
+          <button class="short-map-btn" data-id="${short.id}" type="button" title="지도에서 위치 보기"><svg class="short-map-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></button>
         </div>
         <div class="short-views">조회수 ${short.views}</div>
       </div>
@@ -907,7 +1162,7 @@ document.getElementById('player-expand-btn')?.addEventListener('click', () => {
     }
     if (!app.classList.contains('player-from-map')) app.classList.add('player-from-map');
   }
-  expandBtn.textContent = willExpand ? '⊟ 축소' : '⛶ 전체 창으로 보기';
+  expandBtn.textContent = willExpand ? '⊟' : '⛶';
   refreshMapSize();
 });
 
@@ -923,6 +1178,9 @@ document.getElementById('player-show-map-btn')?.addEventListener('click', () => 
 
 function updateShortsByMap() {
   const searchQuery = document.getElementById('shorts-search-input')?.value ?? '';
+  if (selectedBoundsFilter) {
+    renderShortMarkers();
+  }
   renderShorts(searchQuery, true, selectedPlaceFilter);
 }
 
@@ -1019,6 +1277,17 @@ document.getElementById('subscriptions-page').addEventListener('click', (e) => {
     return;
   }
 
+  const mapBtn = e.target.closest('.short-map-btn');
+  if (mapBtn) {
+    const id = parseInt(mapBtn.dataset.id, 10);
+    const short = shortsData.find((s) => s.id === id);
+    if (short && getLocationPoints(short).length > 0) {
+      showPage('home');
+      showShortOnMap(short);
+      return;
+    }
+  }
+
   const card = e.target.closest('.subs-short-card');
   if (!card) return;
   const id = parseInt(card.dataset.id, 10);
@@ -1074,11 +1343,11 @@ function updateLocationInfo(data) {
     const subTitle = placeName ? data.title : '';
     const displayAddress = data.locationText || (data.placeName && /,|Rd|St|Chome|丁目|区|City|Thailand|Japan/.test(data.placeName) ? data.placeName : null) || data.address;
     const dirUrl = buildDirectionsUrl(data);
-    const playBtn = data.id != null ? `<button type="button" class="location-btn location-btn-play" data-id="${data.id}">▶ 영상 보기</button>` : '';
+    const playBtn = data.id != null ? `<button type="button" class="location-btn location-btn-play" data-id="${data.id}" title="영상 보기">▶</button>` : '';
     const locName = placeName || data.locationText || data.place || '이 장소';
     const relatedBtn =
       data.lat != null && data.lng != null
-        ? `<button type="button" class="location-btn location-btn-related" data-lat="${data.lat}" data-lng="${data.lng}" data-name="${escapeHtml(locName)}">📋 관련 영상보기</button>`
+        ? `<button type="button" class="location-btn location-btn-related" data-lat="${data.lat}" data-lng="${data.lng}" data-name="${escapeHtml(locName)}" title="관련 영상보기">📋</button>`
         : '';
     panel.innerHTML = `
       <div class="location-card">
@@ -1088,7 +1357,7 @@ function updateLocationInfo(data) {
         <div class="location-actions">
           ${playBtn}
           ${relatedBtn}
-          <a href="${dirUrl}" target="_blank" rel="noopener" class="location-btn location-btn-directions">🚗 길찾기</a>
+          <a href="${dirUrl}" target="_blank" rel="noopener" class="location-btn location-btn-directions" title="길찾기">🚗</a>
           <span class="location-meta">조회수 ${data.views}</span>
         </div>
       </div>
@@ -1113,7 +1382,7 @@ function updateLocationInfo(data) {
     const dirUrl = buildDirectionsUrl(data);
     const relatedBtn =
       data.lat != null && data.lng != null
-        ? `<button type="button" class="location-btn location-btn-related" data-lat="${data.lat}" data-lng="${data.lng}" data-name="${escapeHtml(data.name || '이 장소')}">📋 관련 영상보기</button>`
+        ? `<button type="button" class="location-btn location-btn-related" data-lat="${data.lat}" data-lng="${data.lng}" data-name="${escapeHtml(data.name || '이 장소')}" title="관련 영상보기">📋</button>`
         : '';
     panel.innerHTML = `
       <div class="location-card">
@@ -1121,7 +1390,7 @@ function updateLocationInfo(data) {
         ${data.address ? `<div class="location-address">${data.address}</div>` : ''}
         <div class="location-actions">
           ${relatedBtn}
-          <a href="${dirUrl}" target="_blank" rel="noopener" class="location-btn location-btn-directions">🚗 길찾기</a>
+          <a href="${dirUrl}" target="_blank" rel="noopener" class="location-btn location-btn-directions" title="길찾기">🚗</a>
           <span class="location-meta">위도 ${data.lat.toFixed(4)}, 경도 ${data.lng.toFixed(4)}</span>
         </div>
       </div>
@@ -1142,9 +1411,15 @@ function renderShortMarkers() {
   if (shortMarkersLayer) map.removeLayer(shortMarkersLayer);
   shortMarkersLayer = L.markerClusterGroup({ maxClusterRadius: 50 });
   const allPoints = [];
+  let bounds = null;
+  if (selectedBoundsFilter) {
+    bounds = getBoundsForFilter();
+  }
+
   shortsData.forEach((short) => {
     const points = getLocationPoints(short);
     points.forEach((pt) => {
+      if (bounds && !bounds.contains([pt.lat, pt.lng])) return;
       allPoints.push([pt.lat, pt.lng]);
       const m = L.marker([pt.lat, pt.lng])
         .bindPopup(buildPlaceCardHtml(pt), { className: 'place-card-popup', maxWidth: 280 });
@@ -1159,10 +1434,10 @@ function renderShortMarkers() {
     });
   });
   shortMarkersLayer.addTo(map);
-  // 내 위치로 시작했으면 fitBounds로 덮어쓰지 않음
-  if (allPoints.length > 0 && !hasUserLocation) {
-    const bounds = L.latLngBounds(allPoints);
-    map.fitBounds(bounds, { padding: [50, 50], maxZoom: 12 });
+  // 내 위치로 시작했으면 fitBounds로 덮어쓰지 않음 (범위 필터 시에도 보지 않음)
+  if (allPoints.length > 0 && !hasUserLocation && !selectedBoundsFilter) {
+    const fitBounds = L.latLngBounds(allPoints);
+    map.fitBounds(fitBounds, { padding: [50, 50], maxZoom: 12 });
   }
   refreshMapSize();
 }
@@ -1341,13 +1616,46 @@ if (mapSearchDesktop) {
   mapSearchDesktop.addEventListener('input', onMapSearchInput);
 }
 
+function applyBoundsFilter() {
+  if (shortLocationMarker) {
+    if (Array.isArray(shortLocationMarker)) {
+      shortLocationMarker.forEach((m) => map.removeLayer(m));
+    } else {
+      map.removeLayer(shortLocationMarker);
+    }
+    shortLocationMarker = null;
+  }
+  selectedPlaceFilter = null;
+  selectedBoundsFilter = true;
+
+  // 모바일: 지도가 숨겨진 상태면 먼저 지도 표시
+  if (window.innerWidth <= 768 && typeof window.showMapFullScreen === 'function') {
+    window.showMapFullScreen();
+  }
+
+  refreshMapSize();
+
+  // 지도 크기 갱신 후 bounds 안정화를 위해 다음 프레임에서 렌더링
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      renderShortMarkers();
+      updateShortsByMap();
+      const listHeader = document.getElementById('shorts-list-header');
+      if (listHeader) listHeader.style.display = 'flex';
+    });
+  });
+}
+
+// 데스크톱 장소 버튼 (현재 지도 범위 내 장소)
+document.getElementById('map-place-btn')?.addEventListener('click', applyBoundsFilter);
+
 // 모바일 카테고리 칩 (쇼츠/장소/내 위치)
 document.querySelectorAll('.map-chip').forEach((chip, i) => {
   chip.addEventListener('click', () => {
     if (i === 0 && window.innerWidth <= 768) {
       document.getElementById('mobile-shorts-drag-overlay')?.click();
     } else if (i === 1) {
-      (document.getElementById('map-search-input') || document.getElementById('map-search-input-desktop'))?.focus();
+      applyBoundsFilter();
     } else if (i === 2) {
       getMyLocation();
     }

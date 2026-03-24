@@ -1,19 +1,7 @@
 import { defineConfig } from 'vite'
 
-export default defineConfig({
-  base: './',
-  server: {
-    open: !!process.env.DISPLAY, // Linux 헤드리스(SSH 등)에서 open 에러 방지
-    port: 5173,
-    host: true, // 같은 WiFi에서 스마트폰 접속 가능
-    allowedHosts: true, // 터널(localtunnel 등) Host 헤더 400 에러 방지
-    strictPort: false, // 포트 사용 중이면 다른 포트 시도
-  },
-  plugins: [
-    {
-      name: 'api-routes',
-      configureServer(server) {
-        server.middlewares.use(async (req, res, next) => {
+function createApiMiddleware() {
+  return async (req, res, next) => {
           if (req.url?.startsWith('/api/search-channels')) {
             try {
               const url = new URL(req.url, 'http://localhost');
@@ -180,8 +168,27 @@ export default defineConfig({
             }
             return;
           }
-          next();
-        });
+    next();
+  };
+}
+
+export default defineConfig({
+  base: './',
+  server: {
+    open: !!process.env.DISPLAY, // Linux 헤드리스(SSH 등)에서 open 에러 방지
+    port: 5173,
+    host: true, // 같은 WiFi에서 스마트폰 접속 가능
+    allowedHosts: true, // 터널(localtunnel 등) Host 헤더 400 에러 방지
+    strictPort: false, // 포트 사용 중이면 다른 포트 시도
+  },
+  plugins: [
+    {
+      name: 'api-routes',
+      configureServer(server) {
+        server.middlewares.use(createApiMiddleware());
+      },
+      configurePreviewServer(server) {
+        server.middlewares.use(createApiMiddleware());
       },
     },
   ],

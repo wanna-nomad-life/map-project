@@ -42,12 +42,12 @@ export function buildPlaceCardHtml(short, options = {}) {
   const dirUrl = buildDirectionsUrl(short);
   const playBtn =
     options.showPlayBtn !== false && short.youtubeVideoId
-      ? `<button type="button" class="place-card-play-btn" data-id="${short.id}">▶ 영상 보기</button>`
+      ? `<button type="button" class="place-card-play-btn" data-id="${short.id}" title="영상 보기">▶</button>`
       : '';
   const locName = placeName || short.locationText || short.place || '이 장소';
   const relatedBtn =
     short.lat != null && short.lng != null
-      ? `<button type="button" class="place-card-related-btn" data-lat="${short.lat}" data-lng="${short.lng}" data-name="${escapeHtml(locName)}">📋 관련 영상보기</button>`
+      ? `<button type="button" class="place-card-related-btn" data-lat="${short.lat}" data-lng="${short.lng}" data-name="${escapeHtml(locName)}" title="관련 영상보기">📋</button>`
       : '';
   const mainTitle = placeName || short.title;
   const subTitle = placeName ? short.title : '';
@@ -59,7 +59,7 @@ export function buildPlaceCardHtml(short, options = {}) {
       <div class="place-card-actions">
         ${playBtn}
         ${relatedBtn}
-        <a href="${dirUrl}" target="_blank" rel="noopener" class="place-card-directions">🚗 길찾기</a>
+        <a href="${dirUrl}" target="_blank" rel="noopener" class="place-card-directions" title="길찾기">🚗</a>
       </div>
     </div>
   `;
